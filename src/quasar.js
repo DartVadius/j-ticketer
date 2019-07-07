@@ -5,6 +5,7 @@ import '@quasar/extras/roboto-font/roboto-font.css'
 import '@quasar/extras/material-icons/material-icons.css'
 import {
   Quasar,
+  QAvatar,
   QLayout,
   QHeader,
   QDrawer,
@@ -17,12 +18,14 @@ import {
   QList,
   QItem,
   QItemSection,
-  QItemLabel
+  QItemLabel,
+  QInput
 } from 'quasar'
 
 Vue.use(Quasar, {
   config: {},
   components: {
+    QAvatar,
     QLayout,
     QHeader,
     QDrawer,
@@ -35,7 +38,8 @@ Vue.use(Quasar, {
     QList,
     QItem,
     QItemSection,
-    QItemLabel
+    QItemLabel,
+    QInput
   },
   directives: {
   },

@@ -2,7 +2,20 @@
 
 import { app, protocol, BrowserWindow, ipcMain, Menu } from 'electron'
 import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib'
+import Store from 'electron-store'
+
 const isDevelopment = process.env.NODE_ENV !== 'production'
+const schema = {
+  url: {
+    type: 'string',
+    format: 'url'
+  }
+}
+const dataStore = new Store({
+  schema,
+  name: 'j-ticketer-data',
+  cwd: 'user-data'
+})
 
 let mainWindow
 let configWindow
@@ -28,8 +41,10 @@ function createMainWindow () {
   main.setMenu(mainMenu)
 
   const config = new BrowserWindow({
-    width: 600,
-    height: 400,
+    title: 'Config',
+    width: 500,
+    height: 220,
+    resizable: false,
     parent: main,
     webPreferences: {
       nodeIntegration: true
@@ -42,8 +57,11 @@ function createMainWindow () {
   config.setMenu(cofigMenu)
 
   const popup = new BrowserWindow({
-    width: 600,
-    height: 400,
+    title: 'About',
+    width: 180,
+    height: 115,
+    resizable: false,
+    movable: false,
     parent: main,
     webPreferences: {
       nodeIntegration: true
@@ -125,35 +143,63 @@ if (isDevelopment) {
   }
 }
 
-ipcMain.on('toggle-config', () => {
-  configWindow.isVisible() ? configWindow.hide() : configWindow.show()
+ipcMain.on('quit', () => {
+  app.quit()
 })
 
+ipcMain.on('close-config', () => {
+  configWindow.hide()
+})
+
+let data = {}
+
 ipcMain.on('toggle-popup', (event, value) => {
-  data.text = value
+  data = value
 })
 
 ipcMain.on('close-popup', () => {
   popUpWindow.hide()
 })
 
-ipcMain.on('quit', () => {
-  app.quit()
+ipcMain.on('save-config', (event, value) => {
+  try {
+    dataStore.set(value)
+  } catch (e) {
+    popUpWindow.show()
+    popUpWindow.webContents.send('popup-data', {
+      type: 'storage_error',
+      storageError: e.message
+    })
+  }
 })
 
-let data = {
-  text: ''
-}
+ipcMain.on('clear-config', () => {
+  dataStore.clear()
+  configWindow.webContents.send('config-data', {
+    login: dataStore.get('login'),
+    password: dataStore.get('password'),
+    url: dataStore.get('url')
+  })
+})
 
 const mainMenuTemplate = [
   {
-    label: '?',
+    label: 'Menu',
     submenu: [
       {
         label: 'Config',
         accelerator: 'CmdOrCtrl+z',
         click () {
-          configWindow.isVisible() ? configWindow.hide() : configWindow.show()
+          if (configWindow.isVisible()) {
+            configWindow.hide()
+          } else {
+            configWindow.show()
+            configWindow.webContents.send('config-data', {
+              login: dataStore.get('login'),
+              password: dataStore.get('password'),
+              url: dataStore.get('url')
+            })
+          }
         }
       },
       {

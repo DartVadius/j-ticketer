@@ -1,10 +1,15 @@
 <template>
-  <div>
-    <h1>Pop up!</h1>
-    <div>
-      {{ text }}
+  <div class="row q-ma-sm">
+    <div v-if="type === 'about'" class="col text-center">
+      <div class="text-caption">{{ aboutMessage.about }}</div>
+      <div class="text-caption">v. {{ aboutMessage.version }}</div>
+      <div class="text-caption q-mb-sm">by {{ aboutMessage.author }}</div>
+      <q-btn type="button" class="glossy q-py-xs" @click="close" rounded color="grey-5" label="Ok" size="sm"></q-btn>
     </div>
-    <button @click="close">Close</button>
+    <div v-if="type === 'storage_error'" class="col text-center">
+      <div class="text-caption">{{ storageError }}</div>
+      <q-btn type="button" class="glossy q-py-xs" @click="close" rounded color="grey-5" label="Ok" size="sm"></q-btn>
+    </div>
   </div>
 </template>
 
@@ -15,12 +20,17 @@ export default {
   name: 'Popup',
   data () {
     return {
-      text: ''
+      type: '',
+      aboutMessage: {},
+      storageError: ''
     }
   },
   created () {
     ipcRenderer.on('popup-data', (event, value) => {
-      this.text = value.text
+      console.log(value)
+      this.type = value.type
+      if (value.type === 'about') this.aboutMessage = value.aboutMessage
+      if (value.type === 'storage_error') this.storageError = value.storageError
     })
   },
   methods: {

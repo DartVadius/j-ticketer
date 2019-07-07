@@ -5,12 +5,6 @@ module.exports = {
     }
   },
   transpileDependencies: [
-    /[\\\/]node_modules[\\\/]quasar[\\\/]/,
-    /[\\\/]node_modules[\\\/]quasar[\\\/]/,
-    /[\\\/]node_modules[\\\/]quasar[\\\/]/,
-    /[\\\/]node_modules[\\\/]quasar[\\\/]/,
-    /[\\\/]node_modules[\\\/]quasar[\\\/]/,
-    /[\\\/]node_modules[\\\/]quasar[\\\/]/,
     /[\\\/]node_modules[\\\/]quasar[\\\/]/
   ]
 }
