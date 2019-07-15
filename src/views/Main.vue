@@ -23,7 +23,28 @@
     </q-drawer>
 
     <q-page-container>
-      <div class="text-h1 text-center">J-Ticketer</div>
+      <div class="q-pa-md">
+        <div class="row q-col-gutter-sm">
+          <div class="col"></div>
+          <div class="col-8">
+            <common-data
+              v-show="step==='commonData'"
+              @next="next">
+            </common-data>
+            <bug-container
+              v-show="step==='bug'"
+              @prev="prev"
+              @next="next">
+            </bug-container>
+            <preview
+              v-show="step==='preview'"
+              @prev="prev"
+              @next="next">
+            </preview>
+          </div>
+          <div class="col"></div>
+        </div>
+      </div>
     </q-page-container>
 
   </q-layout>
@@ -31,9 +52,17 @@
 
 <script>
 import { ipcRenderer } from 'electron'
+import CommonData from '@/components/CommonData'
+import BugContainer from '@/components/BugContainer'
+import Preview from '@/components/Preview'
 
 export default {
   name: 'Main',
+  components: {
+    CommonData: CommonData,
+    BugContainer: BugContainer,
+    Preview: Preview
+  },
   data () {
     return {
       left: true,
@@ -41,7 +70,8 @@ export default {
         about: 'Jira task creation wizard',
         author: 'DartVadius',
         version: '0.1'
-      }
+      },
+      step: 'commonData'
     }
   },
   created () {
@@ -50,7 +80,15 @@ export default {
       aboutMessage: this.aboutMessage
     })
   },
-  methods: {}
+  methods: {
+    prev (componentId) {
+      this.step = componentId
+    },
+    next (componentId) {
+      // console.log(componentId)
+      this.step = componentId
+    }
+  }
 }
 </script>
 

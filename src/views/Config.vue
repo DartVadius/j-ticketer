@@ -6,7 +6,7 @@
         label="Jira server domain name"
         name="url"
         type="text"
-        v-validate="'required'"
+        v-validate="'required|url'"
         :dense="true">
       </q-input>
       <span class="text-red-5 text-caption">{{ errors.first('url') }}</span>
@@ -37,7 +37,7 @@
     </div>
     <div class="row">
       <div class="col q-gutter-md">
-        <q-btn type="button" class="glossy q-py-xs" @click="clearStorage" rounded color="grey-5" label="Clear storage" size="sm"></q-btn>
+        <q-btn type="button" class="glossy q-py-xs" @click="clearStorage" rounded color="grey-5" label="Clear saved data" size="sm"></q-btn>
       </div>
       <div class="col">
         <div class="row q-gutter-md justify-end">
@@ -64,25 +64,32 @@ export default {
   created () {
     // console.log(123)
     ipcRenderer.on('config-data', (event, value) => {
-      console.log(value)
+      // console.log(value)
       this.login = value.login ? value.login : null
-      this.password = value.password ? value.password : null
+      this.pass = value.password ? value.password : null
       this.url = value.url ? value.url : null
     })
   },
   methods: {
     save () {
-      ipcRenderer.send('save-config', {
-        url: this.url,
-        password: this.password,
-        login: this.login
+      this.$validator.validate().then(valid => {
+        if (valid) {
+          ipcRenderer.send('save-config', {
+            url: this.url,
+            password: this.pass,
+            login: this.login
+          })
+        }
       })
     },
     close () {
+      // console.log(111)
+      this.$validator.errors.clear()
       ipcRenderer.send('close-config')
     },
     clearStorage () {
-      ipcRenderer.send('clear-config')
+      this.$validator.errors.clear()
+      ipcRenderer.send('clear-jira-config')
     }
   }
 }

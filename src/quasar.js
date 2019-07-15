@@ -19,7 +19,13 @@ import {
   QItem,
   QItemSection,
   QItemLabel,
-  QInput
+  QInput,
+  Notify,
+  QCard,
+  QCardSection,
+  QCardActions,
+  QSeparator,
+  QSelect
 } from 'quasar'
 
 Vue.use(Quasar, {
@@ -39,10 +45,22 @@ Vue.use(Quasar, {
     QItem,
     QItemSection,
     QItemLabel,
-    QInput
+    QInput,
+    QCard,
+    QCardSection,
+    QCardActions,
+    QSeparator,
+    QSelect
   },
   directives: {
   },
   plugins: {
-  }
+    Notify
+  },
+  extras: [
+    'material-icons',
+    'material-icons-outlined',
+    'material-icons-round',
+    'material-icons-sharp'
+  ]
 })

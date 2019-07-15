@@ -22,7 +22,7 @@ let configWindow
 let popUpWindow
 
 // Scheme must be registered before the app is ready
-protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }])
+protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: false, standard: true } }])
 
 function createMainWindow () {
   // Create the browser window.
@@ -30,9 +30,10 @@ function createMainWindow () {
     title: 'J-Ticketer',
     width: 800,
     height: 600,
-    backgroundColor: '#fef7ed',
+    // backgroundColor: '#fef7ed',
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      webSecurity: false
     },
     center: true
   })
@@ -50,7 +51,8 @@ function createMainWindow () {
       nodeIntegration: true
     },
     modal: true,
-    show: false
+    show: false,
+    frame: false
   })
 
   let cofigMenu = Menu.buildFromTemplate(configMenuTemplate)
@@ -164,6 +166,14 @@ ipcMain.on('close-popup', () => {
 ipcMain.on('save-config', (event, value) => {
   try {
     dataStore.set(value)
+    let jiraConfig = getJiraConfig()
+    if (jiraConfig.login && jiraConfig.password) {
+      mainWindow.webContents.send('set-auth', {
+        token: [jiraConfig.login, jiraConfig.password].join(':'),
+        baseUrl: jiraConfig.url
+      })
+    }
+    configWindow.hide()
   } catch (e) {
     popUpWindow.show()
     popUpWindow.webContents.send('popup-data', {
@@ -173,13 +183,12 @@ ipcMain.on('save-config', (event, value) => {
   }
 })
 
-ipcMain.on('clear-config', () => {
-  dataStore.clear()
-  configWindow.webContents.send('config-data', {
-    login: dataStore.get('login'),
-    password: dataStore.get('password'),
-    url: dataStore.get('url')
-  })
+ipcMain.on('clear-jira-config', () => {
+  // dataStore.clear()
+  dataStore.delete('login')
+  dataStore.delete('password')
+  dataStore.delete('url')
+  configWindow.webContents.send('config-data', getJiraConfig())
 })
 
 const mainMenuTemplate = [
@@ -194,11 +203,7 @@ const mainMenuTemplate = [
             configWindow.hide()
           } else {
             configWindow.show()
-            configWindow.webContents.send('config-data', {
-              login: dataStore.get('login'),
-              password: dataStore.get('password'),
-              url: dataStore.get('url')
-            })
+            configWindow.webContents.send('config-data', getJiraConfig())
           }
         }
       },
@@ -225,3 +230,11 @@ const mainMenuTemplate = [
 ]
 
 const configMenuTemplate = []
+
+function getJiraConfig () {
+  return {
+    login: dataStore.get('login'),
+    password: dataStore.get('password'),
+    url: dataStore.get('url')
+  }
+}
