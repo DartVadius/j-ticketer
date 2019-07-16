@@ -41,6 +41,10 @@ function createMainWindow () {
   let mainMenu = Menu.buildFromTemplate(mainMenuTemplate)
   main.setMenu(mainMenu)
 
+  if (process.platform === 'darwin') {
+    Menu.setApplicationMenu(mainMenu)
+  }
+
   const config = new BrowserWindow({
     title: 'Config',
     width: 500,
@@ -52,7 +56,8 @@ function createMainWindow () {
     },
     modal: true,
     show: false,
-    frame: false
+    frame: false,
+    backgroundColor: '#ffffff'
   })
 
   let cofigMenu = Menu.buildFromTemplate(configMenuTemplate)
@@ -60,8 +65,8 @@ function createMainWindow () {
 
   const popup = new BrowserWindow({
     title: 'About',
-    width: 180,
-    height: 115,
+    width: 200,
+    height: 150,
     resizable: false,
     movable: false,
     parent: main,
@@ -70,7 +75,8 @@ function createMainWindow () {
     },
     modal: true,
     show: false,
-    frame: false
+    frame: false,
+    backgroundColor: '#ffffff'
   })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {

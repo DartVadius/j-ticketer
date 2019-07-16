@@ -36,6 +36,11 @@
               @prev="prev"
               @next="next">
             </bug-container>
+            <change-container
+              v-show="step==='updateFunc'"
+              @prev="prev"
+              @next="next">
+            </change-container>
             <preview
               v-show="step==='preview'"
               @prev="prev"
@@ -54,6 +59,7 @@
 import { ipcRenderer } from 'electron'
 import CommonData from '@/components/CommonData'
 import BugContainer from '@/components/BugContainer'
+import ChangeContainer from '@/components/ChangeContainer'
 import Preview from '@/components/Preview'
 
 export default {
@@ -61,6 +67,7 @@ export default {
   components: {
     CommonData: CommonData,
     BugContainer: BugContainer,
+    ChangeContainer: ChangeContainer,
     Preview: Preview
   },
   data () {
