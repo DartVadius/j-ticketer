@@ -43,7 +43,7 @@
     </q-card-section>
     <q-card-section>
       <div class="text-body1">
-        Issue steps
+        Tusk flow (subtasks)
         <q-btn type="button" class="glossy q-pa-xs q-mx-xs" @click="addStep" rounded color="primary" size="xs">
           <q-icon name="add_circle_outline" :key="'add-icon'" style="font-size: 1.5em;"></q-icon>
         </q-btn>
@@ -55,13 +55,14 @@
             name="path"
             type="text"
             v-validate="'required'"
-            label="issue step"
+            :prefix="'#' + (key + 1)"
+            :placeholder="'Subtask ' + (key + 1)"
             :dense="true">
           </q-input>
           <span class="text-red-5 text-caption" :key="key + '-error'">{{ errors.first('step-' + key) }}</span>
         </div>
         <div class="col-auto">
-          <q-btn v-if="key > 0" type="button" class="glossy q-pa-xs q-mx-xs" @click="removeStep(value)" rounded color="negative" size="xs">
+          <q-btn type="button" class="glossy q-pa-xs q-mx-xs" @click="removeStep(value)" rounded color="negative" size="xs">
             <q-icon name="clear" :key="key + '-clear-icon'" style="font-size: 1.5em;"></q-icon>
           </q-btn>
         </div>
@@ -82,12 +83,12 @@ export default {
       changeContainer: {
         path: '',
         issueSteps: {
-          0: null
+          // 0: null
         },
         currentBehavior: '',
         expectedBehavior: ''
       },
-      steps: [0],
+      steps: [],
       stepCounter: 0
     }
   },
@@ -96,13 +97,10 @@ export default {
       this.stepCounter++
       this.steps.push(this.stepCounter)
       this.changeContainer.issueSteps[this.stepCounter] = null
-      console.log(this.steps, this.changeContainer.issueSteps)
-      // console.log(this.steps)
     },
     removeStep (step) {
       this.steps.splice(this.steps.indexOf(step), 1)
       delete this.changeContainer.issueSteps[step]
-      console.log(this.steps, this.changeContainer.issueSteps)
     },
     prev () {
       this.$emit('prev', 'commonData')
@@ -110,9 +108,9 @@ export default {
     next () {
       this.$validator.validate().then(valid => {
         if (valid) {
-          // this.$store.dispatch('setChangeContainer', this.bugContainer).then(() => {
-          //   this.$emit('next', 'preview')
-          // })
+          this.$store.dispatch('setChangeContainer', this.changeContainer).then(() => {
+            this.$emit('next', 'form')
+          })
         }
       })
     }

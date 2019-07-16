@@ -60,7 +60,7 @@ import { ipcRenderer } from 'electron'
 import { Api } from '@/api/queries'
 
 export default {
-  name: 'CommonData',
+  name: 'CommonContainer',
   data () {
     return {
       jiraData: {
@@ -88,11 +88,11 @@ export default {
           label: 'Bug'
         },
         {
-          value: 'updateFunc',
+          value: 'update',
           label: 'Change old functionality'
         },
         {
-          value: 'newFunc',
+          value: 'new',
           label: 'New functionality'
         },
         {
@@ -187,7 +187,7 @@ export default {
     next () {
       this.$validator.validate().then(valid => {
         if (valid) {
-          this.$store.dispatch('setTicketCommonInfo', this.ticketData).then(response => {
+          this.$store.dispatch('setCommonContainer', this.ticketData).then(response => {
             this.$emit('next', response.pattern.value)
           })
         }

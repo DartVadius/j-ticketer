@@ -8,8 +8,9 @@ import {
   SET_DEVELOPERS,
   SET_COMPONENTS,
   SET_JIRA_ISSUE_TYPES,
-  SET_WIZARD_COMMON_DATA,
-  SET_WIZARD_BUG_CONTAINER
+  SET_WIZARD_COMMON_CONTAINER,
+  SET_WIZARD_BUG_CONTAINER,
+  SET_WIZARD_CHANGE_CONTAINER
 } from './mutationsType'
 
 Vue.use(Vuex)
@@ -25,23 +26,10 @@ export default new Vuex.Store({
       name: String,
       key: String
     },
-    wizardCommonData: {},
+    commonContainer: {},
     bugContainer: {},
+    changeContainer: {},
     errors: {}
-  },
-  getters: {
-    projects (state) {
-      return state.projects
-    },
-    components (state) {
-      return state.components
-    },
-    issueTypes (state) {
-      return state.issueTypes
-    },
-    project (state) {
-      return state.project
-    }
   },
   mutations: {
     [SET_ERROR] (state, error) {
@@ -64,13 +52,17 @@ export default new Vuex.Store({
       state.project.name = project.name
       state.project.key = project.key
     },
-    [SET_WIZARD_COMMON_DATA] (state, data) {
-      state.wizardCommonData = {}
-      Object.assign(state.wizardCommonData, data)
+    [SET_WIZARD_COMMON_CONTAINER] (state, data) {
+      state.commonContainer = {}
+      Object.assign(state.commonContainer, data)
     },
     [SET_WIZARD_BUG_CONTAINER] (state, data) {
       state.bugContainer = {}
       state.bugContainer = JSON.parse(JSON.stringify(data))
+    },
+    [SET_WIZARD_CHANGE_CONTAINER] (state, data) {
+      state.changeContainer = {}
+      state.changeContainer = JSON.parse(JSON.stringify(data))
     }
   },
   actions: {
@@ -116,10 +108,10 @@ export default new Vuex.Store({
         })
       })
     },
-    setTicketCommonInfo ({ commit }, data) {
+    setCommonContainer ({ commit }, data) {
       return new Promise((resolve, reject) => {
         try {
-          commit(SET_WIZARD_COMMON_DATA, data)
+          commit(SET_WIZARD_COMMON_CONTAINER, data)
           resolve(data)
         } catch (error) {
           commit(SET_ERROR, error)
@@ -131,6 +123,17 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         try {
           commit(SET_WIZARD_BUG_CONTAINER, data)
+          resolve(data)
+        } catch (error) {
+          commit(SET_ERROR, error)
+          reject(error)
+        }
+      })
+    },
+    setChangeContainer ({ commit }, data) {
+      return new Promise((resolve, reject) => {
+        try {
+          commit(SET_WIZARD_CHANGE_CONTAINER, data)
           resolve(data)
         } catch (error) {
           commit(SET_ERROR, error)

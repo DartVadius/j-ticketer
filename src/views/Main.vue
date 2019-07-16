@@ -27,20 +27,25 @@
         <div class="row q-col-gutter-sm">
           <div class="col"></div>
           <div class="col-8">
-            <common-data
+            <common-container
               v-show="step==='commonData'"
               @next="next">
-            </common-data>
+            </common-container>
             <bug-container
               v-show="step==='bug'"
               @prev="prev"
               @next="next">
             </bug-container>
             <change-container
-              v-show="step==='updateFunc'"
+              v-show="step==='update'"
               @prev="prev"
               @next="next">
             </change-container>
+            <form-container
+              v-show="step==='form'"
+              @prev="prev"
+              @next="next">
+            </form-container>
             <preview
               v-show="step==='preview'"
               @prev="prev"
@@ -57,17 +62,19 @@
 
 <script>
 import { ipcRenderer } from 'electron'
-import CommonData from '@/components/CommonData'
+import CommonContainer from '@/components/CommonContainer'
 import BugContainer from '@/components/BugContainer'
 import ChangeContainer from '@/components/ChangeContainer'
+import FormContainer from '@/components/FormContainer'
 import Preview from '@/components/Preview'
 
 export default {
   name: 'Main',
   components: {
-    CommonData: CommonData,
+    CommonContainer: CommonContainer,
     BugContainer: BugContainer,
     ChangeContainer: ChangeContainer,
+    FormContainer: FormContainer,
     Preview: Preview
   },
   data () {
