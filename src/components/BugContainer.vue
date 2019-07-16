@@ -16,7 +16,13 @@
       <span class="text-red-5 text-caption">{{ errors.first('path') }}</span>
     </q-card-section>
     <q-card-section>
-      <div v-for="(key, value) in steps" :key="value + '-row'" class="row items-baseline">
+      <div class="text-body1">
+        Steps to reproduce bug
+        <q-btn type="button" class="glossy q-pa-xs q-mx-xs" @click="addStep" rounded color="primary" size="xs">
+          <q-icon name="add_circle_outline" :key="'add-icon'" style="font-size: 1.5em;"></q-icon>
+        </q-btn>
+      </div>
+      <div v-for="(value, key) in steps" :key="key + '-row'" class="row items-baseline">
         <div class="col">
           <q-select
             v-model="bugContainer.stepsToReproduce[value]"
@@ -29,14 +35,11 @@
             @new-value="createStep"
             label="Step">
           </q-select>
-          <span class="text-red-5 text-caption" :key="value + '-error'">{{ errors.first('step-' + value) }}</span>
+          <span class="text-red-5 text-caption" :key="key + '-error'">{{ errors.first('step-' + key) }}</span>
         </div>
         <div class="col-auto">
-          <q-btn type="button" class="glossy q-pa-xs q-mx-xs" @click="addStep" rounded color="primary" size="xs">
-            <q-icon name="add_circle_outline" :key="value + '-add-icon'" style="font-size: 1.5em;"></q-icon>
-          </q-btn>
-          <q-btn v-if="key > 1" type="button" class="glossy q-pa-xs q-mx-xs" @click="removeStep(key)" rounded color="negative" size="xs">
-            <q-icon name="clear" :key="value + '-clear-icon'" style="font-size: 1.5em;"></q-icon>
+          <q-btn v-if="key > 0" type="button" class="glossy q-pa-xs q-mx-xs" @click="removeStep(value)" rounded color="negative" size="xs">
+            <q-icon name="clear" :key="key + '-clear-icon'" style="font-size: 1.5em;"></q-icon>
           </q-btn>
         </div>
       </div>
@@ -80,13 +83,13 @@ export default {
       bugContainer: {
         path: '',
         stepsToReproduce: {
-          1: null
+          0: null
         },
         currentBehavior: '',
         expectedBehavior: ''
       },
-      steps: [1],
-      stepCounter: 1,
+      steps: [0],
+      stepCounter: 0,
       stepsOptions: []
     }
   },
