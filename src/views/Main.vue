@@ -7,7 +7,7 @@
 
         <q-toolbar-title>
           <q-avatar>
-            <img src="https://cdn.quasar.dev/logo/svg/quasar-logo.svg">
+            <img src="/img/giphy.gif">
           </q-avatar>
           J-Ticketer
         </q-toolbar-title>
