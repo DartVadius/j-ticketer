@@ -26,7 +26,7 @@
       <div class="q-pa-md">
         <div class="row q-col-gutter-sm">
           <div class="col"></div>
-          <div class="col-8">
+          <div class="col-10">
             <common-container
               v-show="step==='commonData'"
               @next="next">

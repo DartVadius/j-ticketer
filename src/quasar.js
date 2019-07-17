@@ -25,7 +25,9 @@ import {
   QCardSection,
   QCardActions,
   QSeparator,
-  QSelect
+  QSelect,
+  QToggle,
+  QCheckbox
 } from 'quasar'
 
 Vue.use(Quasar, {
@@ -50,7 +52,9 @@ Vue.use(Quasar, {
     QCardSection,
     QCardActions,
     QSeparator,
-    QSelect
+    QSelect,
+    QToggle,
+    QCheckbox
   },
   directives: {
   },
