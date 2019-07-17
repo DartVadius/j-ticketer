@@ -21,14 +21,15 @@
       </div>
     </q-card-section>
     <q-card-section v-if="isFormEnable">
-      <div v-for="(value, key) in formGroups" :key="key + '-row'" class="row items-baseline">
-        <div class="col">
-          <form-group-component :formGroup="formContainer[value]"></form-group-component>
-        </div>
-        <div class="col-auto">
+      <div v-for="(value, key) in formGroups" :key="key + '-row'" class="shadow-1">
+        <div class="text-right q-pa-sm">
+          <span class="text-caption">Remove form group</span>
           <q-btn type="button" class="glossy q-pa-xs q-mx-xs" @click="removeFormGroup(value)" rounded color="negative" size="xs">
             <q-icon name="clear" :key="key + '-clear-icon'" style="font-size: 1.5em;"></q-icon>
           </q-btn>
+        </div>
+        <div class="q-my-sm">
+          <form-group-component :formGroup="formContainer[value]"></form-group-component>
         </div>
       </div>
     </q-card-section>

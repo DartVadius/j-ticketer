@@ -86,8 +86,8 @@ function createMainWindow () {
     popup.loadURL(process.env.WEBPACK_DEV_SERVER_URL + '/#/popup')
     if (!process.env.IS_TEST) {
       main.webContents.openDevTools()
-      config.webContents.openDevTools()
-      popup.webContents.openDevTools()
+      // config.webContents.openDevTools()
+      // popup.webContents.openDevTools()
     }
   } else {
     createProtocol('app')

@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="text-body1">
+  <div class="q-pa-sm">
+    <div class="text-body1 text-right">
       <span class="text-caption">Add form field</span>
       <q-btn type="button" class="glossy q-pa-xs q-mx-xs" @click="addRow" rounded color="primary" size="xs">
         <q-icon name="add_circle_outline" :key="'add-icon'" style="font-size: 1.5em;"></q-icon>
@@ -36,7 +36,11 @@
             :dense="true">
             <q-item-label caption>Validation required</q-item-label>
           </q-checkbox>
-          {{row}}{{ rowsContainer[row]}}
+        </div>
+        <div class="col-auto">
+          <q-btn type="button" class="glossy q-pa-xs q-mx-xs" @click="removeRow(row)" rounded color="negative" size="xs">
+            <q-icon name="clear" :key="row + '-clear-icon'" style="font-size: 1.5em;"></q-icon>
+          </q-btn>
         </div>
       </div>
       <div v-show="rowsContainer[row].requireValidation" :key="row + '-validate'">куку</div>
@@ -50,14 +54,14 @@ export default {
   data () {
     return {
       rows: [0],
-      rowsContainer: {
-        0: {
+      rowsContainer: [
+        {
           type: null,
           label: null,
           requireValidation: false,
           validators: []
         }
-      },
+      ],
       fieldsOptions: [
         'Input',
         'Select',
@@ -112,13 +116,17 @@ export default {
   methods: {
     addRow () {
       this.rowCounter++
-      this.rowsContainer[this.rowCounter] = {
+      this.rowsContainer.push({
         type: null,
         label: null,
         requireValidation: false,
         validators: []
-      }
+      })
       this.rows.push(this.rowCounter)
+    },
+    removeRow (row) {
+      this.rows.splice(this.rows.indexOf(row), 1)
+      delete this.rowsContainer[row]
     }
   }
 }
