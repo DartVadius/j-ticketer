@@ -29,7 +29,7 @@
           </q-btn>
         </div>
         <div class="q-my-sm">
-          <form-group-component :formGroup="formContainer[value]"></form-group-component>
+          <form-group-component :formGroup="formContainer[value]" @validationResult="updateValidator"></form-group-component>
         </div>
       </div>
     </q-card-section>
@@ -53,7 +53,18 @@ export default {
       formGroups: [],
       stepCounter: 0,
       formContainer: {},
-      isFormEnable: false
+      isFormEnable: false,
+      formValidators: []
+    }
+  },
+  watch: {
+    formValidators () {
+      if (this.formValidators.length === this.formGroups.length && !this.formValidators.includes(false)) {
+        // todo
+        this.$store.dispatch('setFormContainer', this.formContainer).then(() => {
+          this.$emit('next', 'preview')
+        })
+      }
     }
   },
   methods: {
@@ -61,25 +72,20 @@ export default {
       this.stepCounter++
       this.formContainer[this.stepCounter] = {}
       this.formGroups.push(this.stepCounter)
-      // console.log(this.formGroups, this.formContainer)
     },
     removeFormGroup (groupKey) {
       this.formGroups.splice(this.formGroups.indexOf(groupKey), 1)
       delete this.formContainer[groupKey]
-      // console.log(this.formGroups, this.formContainer)
     },
     prev () {
-      // console.log(this.$store.state.commonContainer)
       this.$emit('prev', this.$store.state.commonContainer.pattern.value)
     },
     next () {
-      this.$validator.validate().then(valid => {
-        if (valid) {
-          // this.$store.dispatch('setChangeContainer', this.bugContainer).then(() => {
-          //   this.$emit('next', 'preview')
-          // })
-        }
-      })
+      this.formValidators = []
+      this.$eventBus.$emit('validateNext')
+    },
+    updateValidator (valid) {
+      this.formValidators.push(valid)
     }
   }
 }

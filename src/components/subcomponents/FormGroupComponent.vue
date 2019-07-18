@@ -6,6 +6,14 @@
         <q-icon name="add_circle_outline" :key="'add-icon'" style="font-size: 1.5em;"></q-icon>
       </q-btn>
     </div>
+    <q-input
+      v-model="title"
+      name="label"
+      type="text"
+      v-validate="'required'"
+      label="Form group label"
+      :dense="true">
+    </q-input>
     <template v-for="(row, index) in rows">
       <div class="row items-baseline q-col-gutter-sm" :key="row">
         <div class="col">
@@ -15,6 +23,7 @@
             name="type"
             :options="fieldsOptions"
             :dense="true"
+            @input="changeFieldType(row)"
             label="Select field type">
           </q-select>
         </div>
@@ -29,7 +38,7 @@
           </q-input>
           <span class="text-red-5 text-caption">{{ errors.first('label') }}</span>
         </div>
-        <div class="col-auto">
+        <div v-if="requireValidation(row)" class="col-auto">
           <q-checkbox
             v-model="rowsContainer[row].requireValidation"
             :name="'rv-' + row"
@@ -54,7 +63,7 @@
                 <q-item-label caption>{{value.label}}</q-item-label>
               </q-checkbox>
             </template>
-            <template v-if="value.key === 'valueType'">
+            <template v-if="value.key === 'valueType' && extendedTypes.includes(rowsContainer[row].type)">
               <q-select
                 v-model="rowsContainer[row].validators.valueType"
                 :options="value.options"
@@ -62,7 +71,7 @@
                 :label="value.label">
               </q-select>
             </template>
-            <template v-if="value.key === 'length'">
+            <template v-if="value.key === 'length' && stringTypes.includes(rowsContainer[row].validators.valueType)">
               <q-item-label caption>{{value.label}}</q-item-label>
               <q-input
                 v-model.number="rowsContainer[row].validators.length"
@@ -71,7 +80,7 @@
                 style="max-width: 200px">
               </q-input>
             </template>
-            <template v-if="value.key === 'diapason'">
+            <template v-if="value.key === 'diapason' && numericTypes.includes(rowsContainer[row].validators.valueType)">
               <q-item-label caption>{{value.label}}</q-item-label>
               <div class="row q-gutter-sm">
                 <q-input
@@ -105,13 +114,14 @@ export default {
   data () {
     return {
       rows: [0],
+      title: '',
       rowsContainer: [
         {
           type: null,
           label: null,
           requireValidation: false,
           validators: {
-            required: null,
+            required: false,
             valueType: null,
             length: 0,
             diapason: {
@@ -120,6 +130,26 @@ export default {
             }
           }
         }
+      ],
+      inputTypes: [
+        'Input',
+        'Select',
+        'Multiselect',
+        'Textarea'
+      ],
+      extendedTypes: [
+        'Input',
+        'Textarea'
+      ],
+      numericTypes: [
+        'Integer',
+        'Decimal'
+      ],
+      stringTypes: [
+        'Alphabetic characters',
+        'Alphabetic characters or numbers',
+        'Alphabetic characters, numbers, dashes or underscores',
+        'Alphabetic characters or spaces'
       ],
       fieldsOptions: [
         'Input',
@@ -172,6 +202,9 @@ export default {
   props: {
     formGroup: Object
   },
+  created () {
+    this.$eventBus.$on('validateNext', this.validateForm)
+  },
   methods: {
     addRow () {
       this.rowCounter++
@@ -180,7 +213,7 @@ export default {
         label: null,
         requireValidation: false,
         validators: {
-          required: null,
+          required: false,
           valueType: null,
           length: null,
           diapason: null
@@ -191,6 +224,26 @@ export default {
     removeRow (row) {
       this.rows.splice(this.rows.indexOf(row), 1)
       delete this.rowsContainer[row]
+    },
+    changeFieldType (row) {
+      this.rowsContainer[row].requireValidation = false
+      this.rowsContainer[row].validators = {
+        required: false,
+        valueType: null,
+        length: 0,
+        diapason: {
+          min: 0,
+          max: 15
+        }
+      }
+    },
+    requireValidation (row) {
+      return this.inputTypes.includes(this.rowsContainer[row].type)
+    },
+    validateForm () {
+      this.$validator.validate().then(valid => {
+        this.$emit('validationResult', valid)
+      })
     }
   }
 }
