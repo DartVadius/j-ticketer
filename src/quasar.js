@@ -27,7 +27,8 @@ import {
   QSeparator,
   QSelect,
   QToggle,
-  QCheckbox
+  QCheckbox,
+  QRange
 } from 'quasar'
 
 Vue.use(Quasar, {
@@ -54,7 +55,8 @@ Vue.use(Quasar, {
     QSeparator,
     QSelect,
     QToggle,
-    QCheckbox
+    QCheckbox,
+    QRange
   },
   directives: {
   },

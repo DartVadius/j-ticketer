@@ -43,7 +43,58 @@
           </q-btn>
         </div>
       </div>
-      <div v-show="rowsContainer[row].requireValidation" :key="row + '-validate'">куку</div>
+      <div v-if="rowsContainer[row].requireValidation" :key="row + '-validate'">
+        <template v-for="value in validatorTypes">
+          <div :key="value.label" class="q-my-md">
+            <template v-if="value.key === 'required'">
+              <q-checkbox
+                v-model="rowsContainer[row].validators.required"
+                :val="value.label"
+                :dense="true">
+                <q-item-label caption>{{value.label}}</q-item-label>
+              </q-checkbox>
+            </template>
+            <template v-if="value.key === 'valueType'">
+              <q-select
+                v-model="rowsContainer[row].validators.valueType"
+                :options="value.options"
+                :dense="true"
+                :label="value.label">
+              </q-select>
+            </template>
+            <template v-if="value.key === 'length'">
+              <q-item-label caption>{{value.label}}</q-item-label>
+              <q-input
+                v-model.number="rowsContainer[row].validators.length"
+                type="number"
+                :dense="true"
+                style="max-width: 200px">
+              </q-input>
+            </template>
+            <template v-if="value.key === 'diapason'">
+              <q-item-label caption>{{value.label}}</q-item-label>
+              <div class="row q-gutter-sm">
+                <q-input
+                  v-model.number="rowsContainer[row].validators.diapason.min"
+                  type="number"
+                  class="col"
+                  :dense="true"
+                  label="Min value"
+                  style="max-width: 200px">
+                </q-input>
+                <q-input
+                  v-model.number="rowsContainer[row].validators.diapason.max"
+                  type="number"
+                  class="col"
+                  :dense="true"
+                  label="Max value"
+                  style="max-width: 200px">
+                </q-input>
+              </div>
+            </template>
+          </div>
+        </template>
+      </div>
     </template>
   </div>
 </template>
@@ -59,7 +110,15 @@ export default {
           type: null,
           label: null,
           requireValidation: false,
-          validators: []
+          validators: {
+            required: null,
+            valueType: null,
+            length: 0,
+            diapason: {
+              min: 0,
+              max: 15
+            }
+          }
         }
       ],
       fieldsOptions: [
@@ -78,14 +137,14 @@ export default {
       ],
       validatorTypes: [
         {
+          key: 'required',
           label: 'Required',
-          value: false,
-          Type: 'bool'
+          type: 'bool'
         },
         {
+          key: 'valueType',
           label: 'Value type',
-          value: null,
-          Type: 'select',
+          type: 'select',
           options: [
             'Alphabetic characters',
             'Alphabetic characters or numbers',
@@ -97,14 +156,14 @@ export default {
           ]
         },
         {
-          label: 'Length',
-          value: [],
-          Type: 'range'
+          key: 'length',
+          label: 'Field value length',
+          type: 'range'
         },
         {
+          key: 'diapason',
           label: 'Min/Max value',
-          value: [],
-          Type: 'range'
+          type: 'range'
         }
       ],
       rowCounter: 0
@@ -120,7 +179,12 @@ export default {
         type: null,
         label: null,
         requireValidation: false,
-        validators: []
+        validators: {
+          required: null,
+          valueType: null,
+          length: null,
+          diapason: null
+        }
       })
       this.rows.push(this.rowCounter)
     },
