@@ -29,7 +29,7 @@
           </q-btn>
         </div>
         <div class="q-my-sm">
-          <form-group-component :formGroup="formContainer[value]" @validationResult="updateValidator"></form-group-component>
+          <form-group-component :formGroup="key" @validationResult="updateValidator"></form-group-component>
         </div>
       </div>
     </q-card-section>
@@ -60,8 +60,9 @@ export default {
   watch: {
     formValidators () {
       if (this.formValidators.length === this.formGroups.length && !this.formValidators.includes(false)) {
-        // todo
+        console.log(1, this.formContainer)
         this.$store.dispatch('setFormContainer', this.formContainer).then(() => {
+          console.log(this.$store.state.formContainer)
           this.$emit('next', 'preview')
         })
       }
@@ -69,9 +70,9 @@ export default {
   },
   methods: {
     addFormGroup () {
-      this.stepCounter++
       this.formContainer[this.stepCounter] = {}
       this.formGroups.push(this.stepCounter)
+      this.stepCounter++
     },
     removeFormGroup (groupKey) {
       this.formGroups.splice(this.formGroups.indexOf(groupKey), 1)
@@ -84,8 +85,9 @@ export default {
       this.formValidators = []
       this.$eventBus.$emit('validateNext')
     },
-    updateValidator (valid) {
-      this.formValidators.push(valid)
+    updateValidator (value) {
+      this.formContainer[value.index] = value.data
+      this.formValidators.push(value.valid)
     }
   }
 }

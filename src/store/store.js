@@ -10,7 +10,8 @@ import {
   SET_JIRA_ISSUE_TYPES,
   SET_WIZARD_COMMON_CONTAINER,
   SET_WIZARD_BUG_CONTAINER,
-  SET_WIZARD_CHANGE_CONTAINER
+  SET_WIZARD_CHANGE_CONTAINER,
+  SET_WIZARD_FORM_CONTAINER
 } from './mutationsType'
 
 Vue.use(Vuex)
@@ -29,6 +30,7 @@ export default new Vuex.Store({
     commonContainer: {},
     bugContainer: {},
     changeContainer: {},
+    formContainer: {},
     errors: {}
   },
   mutations: {
@@ -63,6 +65,10 @@ export default new Vuex.Store({
     [SET_WIZARD_CHANGE_CONTAINER] (state, data) {
       state.changeContainer = {}
       state.changeContainer = JSON.parse(JSON.stringify(data))
+    },
+    [SET_WIZARD_FORM_CONTAINER] (state, data) {
+      state.formContainer = {}
+      state.formContainer = JSON.parse(JSON.stringify(data))
     }
   },
   actions: {
@@ -134,6 +140,17 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         try {
           commit(SET_WIZARD_CHANGE_CONTAINER, data)
+          resolve(data)
+        } catch (error) {
+          commit(SET_ERROR, error)
+          reject(error)
+        }
+      })
+    },
+    setFormContainer ({ commit }, data) {
+      return new Promise((resolve, reject) => {
+        try {
+          commit(SET_WIZARD_FORM_CONTAINER, data)
           resolve(data)
         } catch (error) {
           commit(SET_ERROR, error)

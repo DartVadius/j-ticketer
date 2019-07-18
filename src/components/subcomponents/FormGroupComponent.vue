@@ -121,12 +121,12 @@ export default {
           label: null,
           requireValidation: false,
           validators: {
-            required: false,
+            required: null,
             valueType: null,
-            length: 0,
+            length: null,
             diapason: {
-              min: 0,
-              max: 15
+              min: null,
+              max: null
             }
           }
         }
@@ -200,7 +200,7 @@ export default {
     }
   },
   props: {
-    formGroup: Object
+    formGroup: Number
   },
   created () {
     this.$eventBus.$on('validateNext', this.validateForm)
@@ -213,10 +213,13 @@ export default {
         label: null,
         requireValidation: false,
         validators: {
-          required: false,
+          required: null,
           valueType: null,
           length: null,
-          diapason: null
+          diapason: {
+            min: null,
+            max: null
+          }
         }
       })
       this.rows.push(this.rowCounter)
@@ -228,12 +231,12 @@ export default {
     changeFieldType (row) {
       this.rowsContainer[row].requireValidation = false
       this.rowsContainer[row].validators = {
-        required: false,
+        required: null,
         valueType: null,
-        length: 0,
+        length: null,
         diapason: {
-          min: 0,
-          max: 15
+          min: null,
+          max: null
         }
       }
     },
@@ -241,8 +244,12 @@ export default {
       return this.inputTypes.includes(this.rowsContainer[row].type)
     },
     validateForm () {
+      let formData = {
+        title: this.title,
+        data: JSON.parse(JSON.stringify(this.rowsContainer))
+      }
       this.$validator.validate().then(valid => {
-        this.$emit('validationResult', valid)
+        this.$emit('validationResult', { valid: valid, data: formData, index: this.formGroup })
       })
     }
   }
