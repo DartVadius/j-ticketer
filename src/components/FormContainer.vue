@@ -60,7 +60,7 @@ export default {
   watch: {
     formValidators () {
       if (this.formValidators.length === this.formGroups.length && !this.formValidators.includes(false)) {
-        console.log(1, this.formContainer)
+        // console.log(1, this.formContainer)
         this.$store.dispatch('setFormContainer', this.formContainer).then(() => {
           console.log(this.$store.state.formContainer)
           this.$emit('next', 'preview')

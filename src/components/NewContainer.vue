@@ -6,7 +6,7 @@
     <q-separator inset></q-separator>
     <q-card-section>
       <q-input
-        v-model="changeContainer.title"
+        v-model="newContainer.title"
         name="title"
         type="text"
         v-validate="'required'"
@@ -17,40 +17,56 @@
     </q-card-section>
     <q-card-section>
       <q-input
-        v-model="changeContainer.path"
+        v-model="newContainer.path"
         name="path"
         type="text"
         v-validate="'required'"
-        label="url/path to bug"
+        label="source url/path"
         :dense="true">
       </q-input>
       <span class="text-red-5 text-caption">{{ errors.first('path') }}</span>
     </q-card-section>
     <q-card-section>
       <q-input
-        v-model="changeContainer.currentBehavior"
+        v-model="newContainer.description"
         filled
         v-validate="'required'"
-        name="current"
+        name="description"
         autogrow
         bg-color="blue-1"
-        suffix="current behavior"
+        suffix="Description"
         type="textarea">
       </q-input>
-      <span class="text-red-5 text-caption">{{ errors.first('current') }}</span>
+      <span class="text-red-5 text-caption">{{ errors.first('description') }}</span>
     </q-card-section>
     <q-card-section>
-      <q-input
-        v-model="changeContainer.expectedBehavior"
-        filled
-        v-validate="'required'"
-        name="expected"
-        bg-color="blue-1"
-        autogrow
-        suffix="expected behavior"
-        type="textarea">
-      </q-input>
-      <span class="text-red-5 text-caption">{{ errors.first('expected') }}</span>
+      <q-select
+        v-model="newContainer.scenarios"
+        name="scenarios"
+        :options="scenarioOptions"
+        multiple
+        use-chips
+        stack-label
+        use-input
+        new-value-mode="add"
+        @new-value="createScenario"
+        label="Scenario">
+      </q-select>
+      <template v-for="(scenario, index) in newContainer.scenarios">
+        <q-input
+          :key="index"
+          v-model="newContainer.expectedBehaviors[scenario.value]"
+          class="q-my-md"
+          filled
+          v-validate="'required'"
+          :name="'scenario_' + index"
+          bg-color="blue-1"
+          autogrow
+          :suffix="'scenario: ' + scenario.label"
+          type="textarea">
+        </q-input>
+        <span class="text-red-5 text-caption" :key="'error-' + index">{{ errors.first('scenario_' + index) }}</span>
+      </template>
     </q-card-section>
     <q-card-section>
       <div class="text-body1">
@@ -62,7 +78,7 @@
       <div v-for="(value, key) in steps" :key="key + '-row'" class="row items-baseline">
         <div class="col">
           <q-input
-            v-model="changeContainer.issueSteps[value]"
+            v-model="newContainer.issueSteps[value]"
             name="path"
             type="text"
             v-validate="'required'"
@@ -88,31 +104,56 @@
 
 <script>
 export default {
-  name: 'ChangeContainer',
+  name: 'NewContainer',
   data () {
     return {
-      changeContainer: {
+      newContainer: {
         title: '',
         path: '',
         issueSteps: {
           // 0: null
         },
-        currentBehavior: '',
-        expectedBehavior: ''
+        description: '',
+        scenarios: [],
+        expectedBehaviors: {}
       },
       steps: [],
-      stepCounter: 0
+      stepCounter: 0,
+      scenarioOptions: []
+    }
+  },
+  created () {
+    this.scenarioOptions = []
+    if (this.$jsonStore.get('scenarios')) {
+      let scenarioStore = this.$jsonStore.get('scenarios')
+      if (Object.keys(scenarioStore).length > 0) {
+        Object.keys(scenarioStore).forEach(key => {
+          this.scenarioOptions.push(scenarioStore[key])
+        })
+      }
     }
   },
   methods: {
+    createScenario (val, done) {
+      this.scenarioOptions.push({
+        label: val,
+        value: val
+      })
+      let scenarioStore = {}
+      this.scenarioOptions.forEach(scenario => {
+        scenarioStore[scenario.value] = scenario
+      })
+      this.$jsonStore.set('scenarios', scenarioStore)
+      done(val)
+    },
     addStep () {
       this.steps.push(this.stepCounter)
-      this.changeContainer.issueSteps[this.stepCounter] = null
+      this.newContainer.issueSteps[this.stepCounter] = null
       this.stepCounter++
     },
     removeStep (step) {
       this.steps.splice(this.steps.indexOf(step), 1)
-      delete this.changeContainer.issueSteps[step]
+      delete this.newContainer.issueSteps[step]
     },
     prev () {
       this.$emit('prev', 'commonData')
@@ -120,7 +161,8 @@ export default {
     next () {
       this.$validator.validate().then(valid => {
         if (valid) {
-          this.$store.dispatch('setChangeContainer', this.changeContainer).then(() => {
+          this.$store.dispatch('setNewContainer', this.newContainer).then(() => {
+            console.log(this.$store.state.newContainer)
             this.$emit('next', 'form')
           })
         }

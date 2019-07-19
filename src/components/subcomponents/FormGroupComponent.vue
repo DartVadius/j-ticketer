@@ -8,13 +8,14 @@
     </div>
     <q-input
       v-model="title"
-      name="label"
+      name="formGroupLabel"
       type="text"
       v-validate="'required'"
       label="Form group label"
       :dense="true">
     </q-input>
-    <template v-for="(row, index) in rows">
+    <span class="text-red-5 text-caption">{{ errors.first('formGroupLabel') }}</span>
+    <template v-for="(row) in rows">
       <div class="row items-baseline q-col-gutter-sm" :key="row">
         <div class="col">
           <q-select
@@ -26,6 +27,7 @@
             @input="changeFieldType(row)"
             label="Select field type">
           </q-select>
+          <span class="text-red-5 text-caption">{{ errors.first('type') }}</span>
         </div>
         <div class="col">
           <q-input
@@ -41,6 +43,7 @@
         <div v-if="requireValidation(row)" class="col-auto">
           <q-checkbox
             v-model="rowsContainer[row].requireValidation"
+            @input="changeRequired(row)"
             :name="'rv-' + row"
             :dense="true">
             <q-item-label caption>Validation required</q-item-label>
@@ -66,6 +69,7 @@
             <template v-if="value.key === 'valueType' && extendedTypes.includes(rowsContainer[row].type)">
               <q-select
                 v-model="rowsContainer[row].validators.valueType"
+                @input="changeValueType(row)"
                 :options="value.options"
                 :dense="true"
                 :label="value.label">
@@ -187,7 +191,7 @@ export default {
         },
         {
           key: 'length',
-          label: 'Field value length',
+          label: 'Field length',
           type: 'range'
         },
         {
@@ -230,6 +234,9 @@ export default {
     },
     changeFieldType (row) {
       this.rowsContainer[row].requireValidation = false
+      this.changeRequired(row)
+    },
+    changeRequired (row) {
       this.rowsContainer[row].validators = {
         required: null,
         valueType: null,
@@ -238,6 +245,13 @@ export default {
           min: null,
           max: null
         }
+      }
+    },
+    changeValueType (row) {
+      this.rowsContainer[row].validators.length = null
+      this.rowsContainer[row].validators.diapason = {
+        min: null,
+        max: null
       }
     },
     requireValidation (row) {

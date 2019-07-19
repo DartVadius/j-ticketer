@@ -6,6 +6,17 @@
     <q-separator inset></q-separator>
     <q-card-section>
       <q-input
+        v-model="bugContainer.title"
+        name="title"
+        type="text"
+        v-validate="'required'"
+        label="Title"
+        :dense="true">
+      </q-input>
+      <span class="text-red-5 text-caption">{{ errors.first('title') }}</span>
+    </q-card-section>
+    <q-card-section>
+      <q-input
         v-model="bugContainer.path"
         name="path"
         type="text"
@@ -81,6 +92,7 @@ export default {
   data () {
     return {
       bugContainer: {
+        title: '',
         path: '',
         stepsToReproduce: {
           0: null
@@ -140,6 +152,7 @@ export default {
         stepsStore[step.value] = step
       })
       this.$jsonStore.set('bugSteps', stepsStore)
+      done(val)
     }
   }
 }

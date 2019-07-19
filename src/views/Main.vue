@@ -41,6 +41,11 @@
               @prev="prev"
               @next="next">
             </change-container>
+            <new-container
+              v-show="step==='new'"
+              @prev="prev"
+              @next="next">
+            </new-container>
             <form-container
               v-show="step==='form'"
               @prev="prev"
@@ -65,6 +70,7 @@ import { ipcRenderer } from 'electron'
 import CommonContainer from '@/components/CommonContainer'
 import BugContainer from '@/components/BugContainer'
 import ChangeContainer from '@/components/ChangeContainer'
+import NewContainer from '@/components/NewContainer'
 import FormContainer from '@/components/FormContainer'
 import Preview from '@/components/Preview'
 
@@ -74,6 +80,7 @@ export default {
     CommonContainer: CommonContainer,
     BugContainer: BugContainer,
     ChangeContainer: ChangeContainer,
+    NewContainer: NewContainer,
     FormContainer: FormContainer,
     Preview: Preview
   },
