@@ -46,6 +46,11 @@
               @prev="prev"
               @next="next">
             </new-container>
+            <refactoring-container
+              v-show="step==='refactoring'"
+              @prev="prev"
+              @next="next">
+            </refactoring-container>
             <form-container
               v-show="step==='form'"
               @prev="prev"
@@ -72,6 +77,7 @@ import BugContainer from '@/components/BugContainer'
 import ChangeContainer from '@/components/ChangeContainer'
 import NewContainer from '@/components/NewContainer'
 import FormContainer from '@/components/FormContainer'
+import RefactoringContainer from '@/components/RefactoringContainer'
 import Preview from '@/components/Preview'
 
 export default {
@@ -82,6 +88,7 @@ export default {
     ChangeContainer: ChangeContainer,
     NewContainer: NewContainer,
     FormContainer: FormContainer,
+    RefactoringContainer: RefactoringContainer,
     Preview: Preview
   },
   data () {
@@ -97,8 +104,10 @@ export default {
   },
   created () {
     ipcRenderer.send('toggle-popup', {
-      type: 'about',
-      aboutMessage: this.aboutMessage
+      // type: 'about',
+      // aboutMessage: this.aboutMessage,
+      type: 'storage_error',
+      storageError: 'Здесь могла быть ваша реклама'
     })
   },
   methods: {
@@ -106,7 +115,6 @@ export default {
       this.step = componentId
     },
     next (componentId) {
-      // console.log(componentId)
       this.step = componentId
     }
   }

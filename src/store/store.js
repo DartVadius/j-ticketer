@@ -12,7 +12,8 @@ import {
   SET_WIZARD_BUG_CONTAINER,
   SET_WIZARD_CHANGE_CONTAINER,
   SET_WIZARD_FORM_CONTAINER,
-  SET_WIZARD_NEW_CONTAINER
+  SET_WIZARD_NEW_CONTAINER,
+  SET_WIZARD_REFACTORING_CONTAINER
 } from './mutationsType'
 
 Vue.use(Vuex)
@@ -33,6 +34,7 @@ export default new Vuex.Store({
     changeContainer: {},
     formContainer: {},
     newContainer: {},
+    refactoringContainer: {},
     errors: {}
   },
   mutations: {
@@ -75,6 +77,10 @@ export default new Vuex.Store({
     [SET_WIZARD_NEW_CONTAINER] (state, data) {
       state.newContainer = {}
       state.newContainer = JSON.parse(JSON.stringify(data))
+    },
+    [SET_WIZARD_REFACTORING_CONTAINER] (state, data) {
+      state.refactoringContainer = {}
+      state.refactoringContainer = JSON.parse(JSON.stringify(data))
     }
   },
   actions: {
@@ -168,6 +174,17 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         try {
           commit(SET_WIZARD_FORM_CONTAINER, data)
+          resolve(data)
+        } catch (error) {
+          commit(SET_ERROR, error)
+          reject(error)
+        }
+      })
+    },
+    setRefactoringContainer ({ commit }, data) {
+      return new Promise((resolve, reject) => {
+        try {
+          commit(SET_WIZARD_REFACTORING_CONTAINER, data)
           resolve(data)
         } catch (error) {
           commit(SET_ERROR, error)

@@ -16,7 +16,7 @@
     </q-input>
     <span class="text-red-5 text-caption">{{ errors.first('formGroupLabel') }}</span>
     <template v-for="(row) in rows">
-      <div class="row items-baseline q-col-gutter-sm" :key="row">
+      <div class="row q-col-gutter-sm q-my-sm" :key="row">
         <div class="col">
           <q-select
             v-model="rowsContainer[row].type"
@@ -40,7 +40,7 @@
           </q-input>
           <span class="text-red-5 text-caption">{{ errors.first('label') }}</span>
         </div>
-        <div v-if="requireValidation(row)" class="col-auto">
+        <div v-if="requireValidation(row)" class="col-auto self-baseline">
           <q-checkbox
             v-model="rowsContainer[row].requireValidation"
             @input="changeRequired(row)"
@@ -57,7 +57,7 @@
       </div>
       <div v-if="rowsContainer[row].requireValidation" :key="row + '-validate'">
         <template v-for="value in validatorTypes">
-          <div :key="value.label" class="q-my-md">
+          <div :key="value.label" class="q-my-sm">
             <template v-if="value.key === 'required'">
               <q-checkbox
                 v-model="rowsContainer[row].validators.required"
@@ -80,9 +80,12 @@
               <q-input
                 v-model.number="rowsContainer[row].validators.length"
                 type="number"
+                name="field_length"
+                v-validate="'min_value:0'"
                 :dense="true"
                 style="max-width: 200px">
               </q-input>
+              <span class="text-red-5 text-caption">{{ errors.first('field_length') }}</span>
             </template>
             <template v-if="value.key === 'diapason' && numericTypes.includes(rowsContainer[row].validators.valueType)">
               <q-item-label caption>{{value.label}}</q-item-label>
@@ -92,6 +95,8 @@
                   type="number"
                   class="col"
                   :dense="true"
+                  name="min_value"
+                  v-validate="'min_value:0'"
                   label="Min value"
                   style="max-width: 200px">
                 </q-input>
@@ -99,10 +104,20 @@
                   v-model.number="rowsContainer[row].validators.diapason.max"
                   type="number"
                   class="col"
+                  name="max_value"
+                  v-validate="'min_value:0'"
                   :dense="true"
                   label="Max value"
                   style="max-width: 200px">
                 </q-input>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <span class="text-red-5 text-caption">{{ errors.first('min_value') }}</span>
+                </div>
+                <div class="col">
+                  <span class="text-red-5 text-caption">{{ errors.first('max_value') }}</span>
+                </div>
               </div>
             </template>
           </div>
@@ -125,7 +140,7 @@ export default {
           label: null,
           requireValidation: false,
           validators: {
-            required: null,
+            required: false,
             valueType: null,
             length: null,
             diapason: {
@@ -217,7 +232,7 @@ export default {
         label: null,
         requireValidation: false,
         validators: {
-          required: null,
+          required: false,
           valueType: null,
           length: null,
           diapason: {
@@ -238,7 +253,7 @@ export default {
     },
     changeRequired (row) {
       this.rowsContainer[row].validators = {
-        required: null,
+        required: false,
         valueType: null,
         length: null,
         diapason: {

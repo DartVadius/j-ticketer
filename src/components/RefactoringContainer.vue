@@ -6,7 +6,7 @@
     <q-separator inset></q-separator>
     <q-card-section>
       <q-input
-        v-model="newContainer.title"
+        v-model="refactoringContainer.title"
         name="title"
         type="text"
         v-validate="'required'"
@@ -17,7 +17,7 @@
     </q-card-section>
     <q-card-section>
       <q-input
-        v-model="newContainer.path"
+        v-model="refactoringContainer.path"
         name="path"
         type="text"
         v-validate="'required'"
@@ -28,7 +28,7 @@
     </q-card-section>
     <q-card-section>
       <q-input
-        v-model="newContainer.description"
+        v-model="refactoringContainer.description"
         filled
         v-validate="'required'"
         name="description"
@@ -40,35 +40,6 @@
       <span class="text-red-5 text-caption">{{ errors.first('description') }}</span>
     </q-card-section>
     <q-card-section>
-      <q-select
-        v-model="newContainer.scenarios"
-        name="scenarios"
-        :options="scenarioOptions"
-        multiple
-        use-chips
-        stack-label
-        use-input
-        new-value-mode="add"
-        @new-value="createScenario"
-        label="Scenario">
-      </q-select>
-      <template v-for="(scenario, index) in newContainer.scenarios">
-        <q-input
-          :key="index"
-          v-model="newContainer.expectedBehaviors[scenario.value]"
-          class="q-my-md"
-          filled
-          v-validate="'required'"
-          :name="'scenario_' + index"
-          bg-color="blue-1"
-          autogrow
-          :suffix="'scenario: ' + scenario.label"
-          type="textarea">
-        </q-input>
-        <span class="text-red-5 text-caption" :key="'error-' + index">{{ errors.first('scenario_' + index) }}</span>
-      </template>
-    </q-card-section>
-    <q-card-section>
       <div class="text-body1">
         Tusk flow (subtasks)
         <q-btn type="button" class="glossy q-pa-xs q-mx-xs" @click="addStep" rounded color="primary" size="xs">
@@ -78,7 +49,7 @@
       <div v-for="(value, key) in steps" :key="key + '-row'" class="row items-baseline">
         <div class="col">
           <q-input
-            v-model="newContainer.issueSteps[value]"
+            v-model="refactoringContainer.issueSteps[value]"
             :name="'step-' + key"
             type="text"
             v-validate="'required'"
@@ -104,56 +75,30 @@
 
 <script>
 export default {
-  name: 'NewContainer',
+  name: 'RefactoringContainer',
   data () {
     return {
-      newContainer: {
+      refactoringContainer: {
         title: '',
         path: '',
         issueSteps: {
           // 0: null
         },
-        description: '',
-        scenarios: [],
-        expectedBehaviors: {}
+        description: ''
       },
       steps: [],
-      stepCounter: 0,
-      scenarioOptions: []
-    }
-  },
-  created () {
-    this.scenarioOptions = []
-    if (this.$jsonStore.get('scenarios')) {
-      let scenarioStore = this.$jsonStore.get('scenarios')
-      if (Object.keys(scenarioStore).length > 0) {
-        Object.keys(scenarioStore).forEach(key => {
-          this.scenarioOptions.push(scenarioStore[key])
-        })
-      }
+      stepCounter: 0
     }
   },
   methods: {
-    createScenario (val, done) {
-      this.scenarioOptions.push({
-        label: val,
-        value: val
-      })
-      let scenarioStore = {}
-      this.scenarioOptions.forEach(scenario => {
-        scenarioStore[scenario.value] = scenario
-      })
-      this.$jsonStore.set('scenarios', scenarioStore)
-      done(val)
-    },
     addStep () {
       this.steps.push(this.stepCounter)
-      this.newContainer.issueSteps[this.stepCounter] = null
+      this.refactoringContainer.issueSteps[this.stepCounter] = null
       this.stepCounter++
     },
     removeStep (step) {
       this.steps.splice(this.steps.indexOf(step), 1)
-      delete this.newContainer.issueSteps[step]
+      delete this.refactoringContainer.issueSteps[step]
     },
     prev () {
       this.$emit('prev', 'commonData')
@@ -161,9 +106,9 @@ export default {
     next () {
       this.$validator.validate().then(valid => {
         if (valid) {
-          this.$store.dispatch('setNewContainer', this.newContainer).then(() => {
-            console.log(this.$store.state.newContainer)
-            this.$emit('next', 'form')
+          this.$store.dispatch('setRefactoringContainer', this.refactoringContainer).then(() => {
+            console.log(this.$store.state.refactoringContainer)
+            this.$emit('next', 'preview')
           })
         }
       })
