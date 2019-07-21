@@ -57,7 +57,7 @@
               @next="next">
             </form-container>
             <preview
-              v-show="step==='preview'"
+              v-if="step==='preview'"
               @prev="prev"
               @next="next">
             </preview>
