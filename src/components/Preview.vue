@@ -45,7 +45,7 @@ export default {
     }
   },
   created () {
-    console.log(this.$store.state)
+    // console.log(this.$store.state)
     this.jiraState = this.$store.state.commonContainer
     if (this.$store.state.commonContainer.pattern.value === 'bug') {
       this.taskState = this.$store.state.bugContainer
@@ -65,6 +65,7 @@ export default {
   },
   methods: {
     createPreview () {
+      console.log(this.taskState)
       let body = []
       this.taskModel.title = this.taskState.title
       let url = '**Path/Url:** ' + this.taskState.path
@@ -80,10 +81,41 @@ export default {
         body.push('**Current behavior**<br>' + this.taskState.currentBehavior)
         body.push('**Expected behavior**<br>' + this.taskState.expectedBehavior)
       }
+      if (this.jiraState.pattern.value === 'new' || this.jiraState.pattern.value === 'refactoring') {
+        body.push('**Description**<br>' + this.taskState.description)
+      }
+      if (this.jiraState.pattern.value === 'new') {
+        let scenarios = []
+        Object.keys(this.taskState.expectedBehaviors).forEach(key => {
+          scenarios.push('**' + key + ':** ' + this.taskState.expectedBehaviors[key])
+        })
+        body.push('**Scenarios**<br>' + scenarios.join('<br>'))
+      }
       if (this.jiraState.pattern.value !== 'bug') {
-        // todo subtasks
+        let subtasks = []
+        Object.keys(this.taskState.issueSteps).forEach((key, index) => {
+          subtasks.push(index + 1 + '. ' + this.taskState.issueSteps[key])
+        })
+        body.push('**Subtasks:**<br>' + subtasks.join('<br>'))
+      }
+      if (this.jiraState.pattern.value === 'new' || this.jiraState.pattern.value === 'update') {
+        body.push(this.createFormPreview())
       }
       this.taskModel.body = body.join('<br>')
+    },
+    createFormPreview () {
+      console.log(this.formState)
+      let form = []
+      Object.keys(this.formState).forEach(key => {
+        form.push('**Form group ' + this.formState[key].title + '**')
+        this.formState[key].data.forEach(value => {
+          form.push('**Field type:** ' + value.type + ', **Field label:** ' + value.label + ', **Required validation:** ' + value.requireValidation)
+          if (value.requireValidation) {
+            // todo
+          }
+        })
+      })
+      return form.join('<br>')
     },
     prev () {
       this.$emit('prev', this.$store.state.commonContainer.pattern.value)
