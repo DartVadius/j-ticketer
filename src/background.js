@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, ipcMain, Menu } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain, Menu, session } from 'electron'
 import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib'
 import Store from 'electron-store'
 
@@ -16,6 +16,10 @@ const dataStore = new Store({
   name: 'j-ticketer-data',
   cwd: 'user-data'
 })
+
+const filter = {
+  urls: ['*']
+}
 
 let mainWindow
 let configWindow
@@ -134,6 +138,11 @@ app.on('ready', async () => {
     }
   }
   mainWindow = createMainWindow()
+  session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
+    delete details.requestHeaders['User-Agent']
+    /* eslint-disable-next-line */
+    callback({ requestHeaders: details.requestHeaders })
+  })
 })
 
 // Exit cleanly on request from parent process in development mode.

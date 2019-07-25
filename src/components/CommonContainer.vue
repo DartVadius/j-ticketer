@@ -27,9 +27,11 @@
       <q-select
         v-model="ticketData.issueType"
         name="issueType"
+        v-validate="'required'"
         :options="formData.issuesOptions"
         label="Select issue type">
       </q-select>
+      <span class="text-red-5 text-caption">{{ errors.first('issueType') }}</span>
     </q-card-section>
     <q-card-section>
       <q-select
@@ -136,7 +138,6 @@ export default {
       })
     },
     projectChange (value) {
-      // todo сценарии поведения для разных пользователей
       this.jiraData.components = []
       this.jiraData.issues = []
       this.jiraData.users = []

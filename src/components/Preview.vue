@@ -27,6 +27,7 @@
 
 <script>
 import VueSimplemde from 'vue-simplemde'
+import axios from 'axios'
 
 export default {
   name: 'Preview',
@@ -101,18 +102,31 @@ export default {
       if (this.jiraState.pattern.value === 'new' || this.jiraState.pattern.value === 'update') {
         body.push(this.createFormPreview())
       }
-      this.taskModel.body = body.join('<br>')
+      this.taskModel.body = body.join('<br><br>')
     },
     createFormPreview () {
       console.log(this.formState)
       let form = []
       Object.keys(this.formState).forEach(key => {
-        form.push('**Form group ' + this.formState[key].title + '**')
+        form.push('<br>**Form group ' + this.formState[key].title + '**')
         this.formState[key].data.forEach(value => {
-          form.push('**Field type:** ' + value.type + ', **Field label:** ' + value.label + ', **Required validation:** ' + value.requireValidation)
+          form.push('<br>**Field type:** ' + value.type + '<br>**Field label:** ' + value.label + '<br>**Required validation:** ' + value.requireValidation)
+          let validationRules = []
           if (value.requireValidation) {
-            // todo
+            validationRules.push('**Validation rules:**')
+            validationRules.push('* required: ' + value.validators.required)
+            validationRules.push('* value type: ' + value.validators.valueType)
+            if (value.validators.length) {
+              validationRules.push('* field length: ' + value.validators.length)
+            }
+            if (value.validators.diapason.min) {
+              validationRules.push('* min value: ' + value.validators.diapason.min)
+            }
+            if (value.validators.diapason.max) {
+              validationRules.push('* max value: ' + value.validators.diapason.max)
+            }
           }
+          if (validationRules.length > 0) form.push(validationRules.join('<br>'))
         })
       })
       return form.join('<br>')
@@ -123,9 +137,37 @@ export default {
     next () {
       this.$validator.validate().then(valid => {
         if (valid) {
-          // this.$store.dispatch('setBugContainer', this.bugContainer).then(() => {
-          //   this.$emit('next', this.$store.state.wizardCommonData.parent)
-          // })
+          console.log(this.$store.state.commonContainer)
+          let issueTypeId = null
+          if (this.$store.state.commonContainer.issueType) {
+            issueTypeId = this.$store.state.commonContainer.issueType.value
+          }
+          let componentId = null
+          if (this.$store.state.commonContainer.component) {
+            componentId = this.$store.state.commonContainer.component.value
+          }
+          let issueData = {
+            'fields': {
+              'project':
+                {
+                  'key': this.$store.state.commonContainer.project.key
+                },
+              'summary': this.taskModel.title,
+              'description': this.taskModel.body,
+              'issuetype': {
+                'id': issueTypeId
+              },
+              'components': [
+                {
+                  'id': componentId
+                }
+              ]
+            }
+          }
+          axios.post('')
+          this.$store.dispatch('saveTicket', issueData).then((response) => {
+            // this.$store.dispatch('assignUser', [response.key, {'name': }])
+          })
         }
       })
     }

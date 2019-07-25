@@ -26,6 +26,7 @@ export const Api = {
     })
   },
   post (resource, params) {
+    console.log(Vue.axios.defaults.headers)
     return Vue.axios.post(resource, params).catch(error => {
       throw new Error(`ApiService ${error}`)
     })

@@ -126,6 +126,26 @@ export default new Vuex.Store({
         })
       })
     },
+    saveTicket ({ commit }, issueData) {
+      return new Promise((resolve, reject) => {
+        Api.post('rest/api/2/issue', issueData).then((response) => {
+          resolve(response.data)
+        }).catch((error) => {
+          commit(SET_ERROR, error)
+          reject(error)
+        })
+      })
+    },
+    assignUser ({ commit }, [issueId, user]) {
+      return new Promise((resolve, reject) => {
+        Api.post('rest/api/3/issue/' + issueId + '/assignee', user).then((response) => {
+          resolve(response.data)
+        }).catch((error) => {
+          commit(SET_ERROR, error)
+          reject(error)
+        })
+      })
+    },
     setCommonContainer ({ commit }, data) {
       return new Promise((resolve, reject) => {
         try {
