@@ -15,9 +15,17 @@
       </q-input>
       <span class="text-red-5 text-caption">{{ errors.first('title') }}</span>
     </q-card-section>
-    <q-card-actions>
-      <vue-simplemde v-model="taskModel.body" ref="markdownEditor" />
-    </q-card-actions>
+    <q-card-section>
+      <q-input
+        v-model="taskModel.body"
+        filled
+        v-validate="'required'"
+        name="body"
+        autogrow
+        type="textarea">
+      </q-input>
+      <span class="text-red-5 text-caption">{{ errors.first('body') }}</span>
+    </q-card-section>
     <q-card-actions>
       <q-btn type="button" class="glossy q-py-xs float-right" @click="prev" rounded color="grey-5" label="Prev" size="sm"></q-btn>
       <q-btn type="button" class="glossy q-py-xs float-right" @click="next" rounded color="grey-5" label="Next" size="sm"></q-btn>
@@ -26,14 +34,9 @@
 </template>
 
 <script>
-import VueSimplemde from 'vue-simplemde'
-import axios from 'axios'
 
 export default {
   name: 'Preview',
-  components: {
-    VueSimplemde
-  },
   data () {
     return {
       jiraState: {},
@@ -69,51 +72,51 @@ export default {
       console.log(this.taskState)
       let body = []
       this.taskModel.title = this.taskState.title
-      let url = '**Path/Url:** ' + this.taskState.path
+      let url = 'Path/Url: ' + this.taskState.path
       body.push(url)
       if (this.jiraState.pattern.value === 'bug') {
         let steps = []
         Object.keys(this.taskState.stepsToReproduce).forEach((key, index) => {
           steps.push(index + 1 + '. ' + this.taskState.stepsToReproduce[key].value)
         })
-        body.push('**Steps to reproduce:**<br>' + steps.join('<br>'))
+        body.push('Steps to reproduce:\n' + steps.join('\n'))
       }
       if (this.jiraState.pattern.value === 'bug' || this.jiraState.pattern.value === 'update') {
-        body.push('**Current behavior**<br>' + this.taskState.currentBehavior)
-        body.push('**Expected behavior**<br>' + this.taskState.expectedBehavior)
+        body.push('Current behavior:\n' + this.taskState.currentBehavior)
+        body.push('Expected behavior:\n' + this.taskState.expectedBehavior)
       }
       if (this.jiraState.pattern.value === 'new' || this.jiraState.pattern.value === 'refactoring') {
-        body.push('**Description**<br>' + this.taskState.description)
+        body.push('Description\n' + this.taskState.description)
       }
       if (this.jiraState.pattern.value === 'new') {
         let scenarios = []
         Object.keys(this.taskState.expectedBehaviors).forEach(key => {
-          scenarios.push('**' + key + ':** ' + this.taskState.expectedBehaviors[key])
+          scenarios.push(key + ': ' + this.taskState.expectedBehaviors[key])
         })
-        body.push('**Scenarios**<br>' + scenarios.join('<br>'))
+        body.push('Scenarios\n' + scenarios.join('\n'))
       }
       if (this.jiraState.pattern.value !== 'bug') {
         let subtasks = []
         Object.keys(this.taskState.issueSteps).forEach((key, index) => {
           subtasks.push(index + 1 + '. ' + this.taskState.issueSteps[key])
         })
-        body.push('**Subtasks:**<br>' + subtasks.join('<br>'))
+        body.push('Subtasks:\n' + subtasks.join('\n'))
       }
       if (this.jiraState.pattern.value === 'new' || this.jiraState.pattern.value === 'update') {
         body.push(this.createFormPreview())
       }
-      this.taskModel.body = body.join('<br><br>')
+      this.taskModel.body = body.join('\n\n')
     },
     createFormPreview () {
       console.log(this.formState)
       let form = []
       Object.keys(this.formState).forEach(key => {
-        form.push('<br>**Form group ' + this.formState[key].title + '**')
+        form.push('\nForm group ' + this.formState[key].title + '')
         this.formState[key].data.forEach(value => {
-          form.push('<br>**Field type:** ' + value.type + '<br>**Field label:** ' + value.label + '<br>**Required validation:** ' + value.requireValidation)
+          form.push('\nField type: ' + value.type + '\nField label: ' + value.label + '\nRequired validation: ' + value.requireValidation)
           let validationRules = []
           if (value.requireValidation) {
-            validationRules.push('**Validation rules:**')
+            validationRules.push('Validation rules:')
             validationRules.push('* required: ' + value.validators.required)
             validationRules.push('* value type: ' + value.validators.valueType)
             if (value.validators.length) {
@@ -126,10 +129,10 @@ export default {
               validationRules.push('* max value: ' + value.validators.diapason.max)
             }
           }
-          if (validationRules.length > 0) form.push(validationRules.join('<br>'))
+          if (validationRules.length > 0) form.push(validationRules.join('\n'))
         })
       })
-      return form.join('<br>')
+      return form.join('\n')
     },
     prev () {
       this.$emit('prev', this.$store.state.commonContainer.pattern.value)
@@ -164,8 +167,8 @@ export default {
               ]
             }
           }
-          axios.post('')
           this.$store.dispatch('saveTicket', issueData).then((response) => {
+            console.log(response)
             // this.$store.dispatch('assignUser', [response.key, {'name': }])
           })
         }
@@ -176,5 +179,4 @@ export default {
 </script>
 
 <style scoped>
-  @import '~simplemde/dist/simplemde.min.css';
 </style>
