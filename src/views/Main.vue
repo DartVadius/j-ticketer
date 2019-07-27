@@ -109,6 +109,9 @@ export default {
       type: 'storage_error',
       storageError: 'Здесь могла быть ваша реклама'
     })
+    ipcRenderer.on('set-locale', (event, value) => {
+      this.$i18n.locale = value.locale
+    })
   },
   methods: {
     prev (componentId) {

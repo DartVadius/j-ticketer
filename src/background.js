@@ -188,6 +188,11 @@ ipcMain.on('save-config', (event, value) => {
         baseUrl: jiraConfig.url
       })
     }
+    if (jiraConfig.locale) {
+      mainWindow.webContents.send('set-locale', {
+        locale: jiraConfig.locale
+      })
+    }
     configWindow.hide()
   } catch (e) {
     popUpWindow.show()
@@ -250,6 +255,7 @@ function getJiraConfig () {
   return {
     login: dataStore.get('login'),
     password: dataStore.get('password'),
-    url: dataStore.get('url')
+    url: dataStore.get('url'),
+    locale: dataStore.get('locale')
   }
 }

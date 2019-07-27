@@ -1,7 +1,7 @@
 <template>
   <q-card bordered class="my-card">
     <q-card-section>
-      <div class="text-h6 text-primary">Step 1</div>
+      <div class="text-h6 text-primary">{{ $t('Step') }} 1</div>
     </q-card-section>
     <q-separator inset></q-separator>
     <q-card-section>
@@ -11,7 +11,7 @@
         name="project"
         :options="formData.projectOptions"
         @input="projectChange"
-        label="Select project">
+        :label="$t('Select project')">
       </q-select>
       <span class="text-red-5 text-caption">{{ errors.first('project') }}</span>
     </q-card-section>

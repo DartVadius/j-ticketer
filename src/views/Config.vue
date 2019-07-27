@@ -3,7 +3,7 @@
     <div class="column">
       <q-input
         v-model="url"
-        label="Jira server domain name"
+        :label="$t('Jira server domain name')"
         name="url"
         type="text"
         v-validate="'required|url'"
@@ -18,7 +18,7 @@
           name="login"
           type="text"
           v-validate="'required'"
-          label="Jira login"
+          :label="$t('Jira login')"
           :dense="true">
         </q-input>
         <span class="text-red-5 text-caption">{{ errors.first('login') }}</span>
@@ -29,20 +29,30 @@
           name="password"
           type="password"
           v-validate="'required'"
-          label="Jira password"
+          :label="$t('Jira password')"
           :dense="true">
         </q-input>
         <span class="text-red-5 text-caption">{{ errors.first('password') }}</span>
       </div>
+      <div class="col">
+        <q-select
+          v-model="locale"
+          name="locale"
+          :options="localeOptions"
+          :dense="true"
+          :label="$t('Locale')">
+        </q-select>
+        <span class="text-red-5 text-caption">{{ errors.first('locale') }}</span>
+      </div>
     </div>
     <div class="row">
       <div class="col q-gutter-md">
-        <q-btn type="button" class="glossy q-py-xs" @click="clearStorage" rounded color="grey-5" label="Clear saved data" size="sm"></q-btn>
+        <q-btn type="button" class="glossy q-py-xs" @click="clearStorage" rounded color="grey-5" :label="$t('Clear saved data')" size="sm"></q-btn>
       </div>
       <div class="col">
         <div class="row q-gutter-md justify-end">
-          <q-btn type="button" class="glossy q-py-xs" @click="close" rounded color="grey-5" label="Close" size="sm"></q-btn>
-          <q-btn type="button" class="glossy q-py-xs" @click="save" rounded color="grey-5" label="Save" size="sm"></q-btn>
+          <q-btn type="button" class="glossy q-py-xs" @click="close" rounded color="grey-5" :label="$t('Close')" size="sm"></q-btn>
+          <q-btn type="button" class="glossy q-py-xs" @click="save" rounded color="grey-5" :label="$t('Save')" size="sm"></q-btn>
         </div>
       </div>
     </div>
@@ -58,7 +68,21 @@ export default {
     return {
       url: null,
       login: null,
-      pass: null
+      pass: null,
+      locale: {
+        label: 'En',
+        value: 'en'
+      },
+      localeOptions: [
+        {
+          label: 'Ru',
+          value: 'ru'
+        },
+        {
+          label: 'En',
+          value: 'en'
+        }
+      ]
     }
   },
   created () {
@@ -68,6 +92,13 @@ export default {
       this.login = value.login ? value.login : null
       this.pass = value.password ? value.password : null
       this.url = value.url ? value.url : null
+      this.locale = value.locale ? {
+        label: value.locale.charAt(0).toUpperCase() + value.locale.slice(1),
+        value: value.locale
+      } : {
+        label: 'En',
+        value: 'en'
+      }
     })
   },
   methods: {
@@ -77,7 +108,8 @@ export default {
           ipcRenderer.send('save-config', {
             url: this.url,
             password: this.pass,
-            login: this.login
+            login: this.login,
+            locale: this.locale.value
           })
         }
       })

@@ -7,6 +7,7 @@ import './registerServiceWorker'
 import './quasar'
 import { Api } from './api/queries'
 import Store from 'electron-store'
+import i18n from './i18n'
 
 Vue.config.productionTip = false
 
@@ -28,8 +29,11 @@ const dataStore = new Store({
 let config = {
   login: dataStore.get('login'),
   password: dataStore.get('password'),
-  url: dataStore.get('url')
+  url: dataStore.get('url'),
+  locale: dataStore.get('locale')
 }
+
+if (config.locale) i18n.locale = config.locale
 
 Api.setAuth({ token: [config.login, config.password].join(':'), baseUrl: config.url })
 
@@ -50,5 +54,6 @@ Vue.use(VeeValidate)
 new Vue({
   router,
   store,
+  i18n,
   render: h => h(App)
 }).$mount('#app')
