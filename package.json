@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service electron:serve",
     "debug": "vue-cli-service electron:serve --debug",
-    "build": "vue-cli-service quasar build",
+    "build": "vue-cli-service electron:build",
     "lint": "vue-cli-service lint",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",

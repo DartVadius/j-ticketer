@@ -58,8 +58,8 @@
             </form-container>
             <preview
               v-if="step==='preview'"
-              @prev="prev"
-              @next="next">
+              @clear="clear"
+              @prev="prev">
             </preview>
           </div>
           <div class="col"></div>
@@ -114,6 +114,9 @@ export default {
     })
   },
   methods: {
+    clear () {
+      this.step = 'commonData'
+    },
     prev (componentId) {
       this.step = componentId
     },

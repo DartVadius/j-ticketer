@@ -1,7 +1,7 @@
 <template>
   <q-card bordered class="my-card">
     <q-card-section>
-      <div class="text-h6 text-primary">{{ $t('Step') }} 3</div>
+      <div class="text-h6 text-primary">{{ $t('Preview') }}</div>
     </q-card-section>
     <q-separator inset></q-separator>
     <q-card-section>
@@ -28,7 +28,7 @@
     </q-card-section>
     <q-card-actions>
       <q-btn type="button" class="glossy q-py-xs float-right" @click="prev" rounded color="grey-5" :label="$t('Prev')" size="sm"></q-btn>
-      <q-btn type="button" class="glossy q-py-xs float-right" @click="next" rounded color="grey-5" :label="$t('Next')" size="sm"></q-btn>
+      <q-btn type="button" class="glossy q-py-xs float-right" @click="save" rounded color="grey-5" :label="$t('Save')" size="sm"></q-btn>
     </q-card-actions>
   </q-card>
 </template>
@@ -69,7 +69,7 @@ export default {
   },
   methods: {
     createPreview () {
-      console.log(this.taskState)
+      // console.log(this.taskState)
       let body = []
       this.taskModel.title = this.taskState.title
       let url = 'Path/Url: ' + this.taskState.path
@@ -108,7 +108,7 @@ export default {
       this.taskModel.body = body.join('\n\n')
     },
     createFormPreview () {
-      console.log(this.formState)
+      // console.log(this.formState)
       let form = []
       Object.keys(this.formState).forEach(key => {
         form.push('\n' + this.$t('Form group') + ' ' + this.formState[key].title + '')
@@ -137,10 +137,10 @@ export default {
     prev () {
       this.$emit('prev', this.$store.state.commonContainer.pattern.value)
     },
-    next () {
+    save () {
       this.$validator.validate().then(valid => {
         if (valid) {
-          // console.log(this.$store.state.commonContainer)
+          // console.log(this.$store.state.commonContainer, this.$store.state.developers)
           let issueTypeId = null
           if (this.$store.state.commonContainer.issueType) {
             issueTypeId = this.$store.state.commonContainer.issueType.value
@@ -168,8 +168,19 @@ export default {
             }
           }
           this.$store.dispatch('saveTicket', issueData).then((response) => {
-            console.log(response)
-            // this.$store.dispatch('assignUser', [response.key, {'name': }])
+            this.$emit('clear')
+            // console.log(response)
+            // if (this.$store.state.commonContainer.user) {
+            //   this.$store.dispatch('assignUser', [response.key, { 'name': this.$store.state.commonContainer.user.value }]).then(() => {
+            //     this.$store.dispatch('clearState').then(() => {
+            //       this.$emit('clear')
+            //     })
+            //   })
+            // } else {
+            //   this.$store.dispatch('clearState').then(() => {
+            //     this.$emit('clear')
+            //   })
+            // }
           })
         }
       })
