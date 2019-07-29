@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-sm">
     <div class="text-body1 text-right">
-      <span class="text-caption">Add form field</span>
+      <span class="text-caption">{{ $t('Add form field') }}</span>
       <q-btn type="button" class="glossy q-pa-xs q-mx-xs" @click="addRow" rounded color="primary" size="xs">
         <q-icon name="add_circle_outline" :key="'add-icon'" style="font-size: 1.5em;"></q-icon>
       </q-btn>
@@ -11,7 +11,7 @@
       name="formGroupLabel"
       type="text"
       v-validate="'required'"
-      label="Form group label"
+      :label="$t('Form group label')"
       :dense="true">
     </q-input>
     <span class="text-red-5 text-caption">{{ errors.first('formGroupLabel') }}</span>
@@ -25,7 +25,7 @@
             :options="fieldsOptions"
             :dense="true"
             @input="changeFieldType(row)"
-            label="Select field type">
+            :label="$t('Select field type')">
           </q-select>
           <span class="text-red-5 text-caption">{{ errors.first('type') }}</span>
         </div>
@@ -35,7 +35,7 @@
             name="label"
             type="text"
             v-validate="'required'"
-            label="Label"
+            :label="$t('Label')"
             :dense="true">
           </q-input>
           <span class="text-red-5 text-caption">{{ errors.first('label') }}</span>
@@ -46,7 +46,7 @@
             @input="changeRequired(row)"
             :name="'rv-' + row"
             :dense="true">
-            <q-item-label caption>Validation required</q-item-label>
+            <q-item-label caption>{{ $t('Validation required') }}</q-item-label>
           </q-checkbox>
         </div>
         <div class="col-auto">
@@ -97,7 +97,7 @@
                   :dense="true"
                   name="min_value"
                   v-validate="'min_value:0'"
-                  label="Min value"
+                  :label="$t('Min value')"
                   style="max-width: 200px">
                 </q-input>
                 <q-input
@@ -107,7 +107,7 @@
                   name="max_value"
                   v-validate="'min_value:0'"
                   :dense="true"
-                  label="Max value"
+                  :label="$t('Max value')"
                   style="max-width: 200px">
                 </q-input>
               </div>

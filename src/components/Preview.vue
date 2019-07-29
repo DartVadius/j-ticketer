@@ -1,7 +1,7 @@
 <template>
   <q-card bordered class="my-card">
     <q-card-section>
-      <div class="text-h6 text-primary">Step 3</div>
+      <div class="text-h6 text-primary">{{ $t('Step') }} 3</div>
     </q-card-section>
     <q-separator inset></q-separator>
     <q-card-section>
@@ -10,7 +10,7 @@
         v-validate="'required'"
         name="title"
         :dense="true"
-        label="Title"
+        :label="$t('Title')"
         type="text">
       </q-input>
       <span class="text-red-5 text-caption">{{ errors.first('title') }}</span>
@@ -27,8 +27,8 @@
       <span class="text-red-5 text-caption">{{ errors.first('body') }}</span>
     </q-card-section>
     <q-card-actions>
-      <q-btn type="button" class="glossy q-py-xs float-right" @click="prev" rounded color="grey-5" label="Prev" size="sm"></q-btn>
-      <q-btn type="button" class="glossy q-py-xs float-right" @click="next" rounded color="grey-5" label="Next" size="sm"></q-btn>
+      <q-btn type="button" class="glossy q-py-xs float-right" @click="prev" rounded color="grey-5" :label="$t('Prev')" size="sm"></q-btn>
+      <q-btn type="button" class="glossy q-py-xs float-right" @click="next" rounded color="grey-5" :label="$t('Next')" size="sm"></q-btn>
     </q-card-actions>
   </q-card>
 </template>
@@ -79,28 +79,28 @@ export default {
         Object.keys(this.taskState.stepsToReproduce).forEach((key, index) => {
           steps.push(index + 1 + '. ' + this.taskState.stepsToReproduce[key].value)
         })
-        body.push('Steps to reproduce:\n' + steps.join('\n'))
+        body.push(this.$t('Steps to reproduce bug') + ':\n' + steps.join('\n'))
       }
       if (this.jiraState.pattern.value === 'bug' || this.jiraState.pattern.value === 'update') {
-        body.push('Current behavior:\n' + this.taskState.currentBehavior)
-        body.push('Expected behavior:\n' + this.taskState.expectedBehavior)
+        body.push(this.$t('current behavior') + ':\n' + this.taskState.currentBehavior)
+        body.push(this.$t('expected behavior') + ':\n' + this.taskState.expectedBehavior)
       }
       if (this.jiraState.pattern.value === 'new' || this.jiraState.pattern.value === 'refactoring') {
-        body.push('Description\n' + this.taskState.description)
+        body.push(this.$t('Description') + '\n' + this.taskState.description)
       }
       if (this.jiraState.pattern.value === 'new') {
         let scenarios = []
         Object.keys(this.taskState.expectedBehaviors).forEach(key => {
           scenarios.push(key + ': ' + this.taskState.expectedBehaviors[key])
         })
-        body.push('Scenarios\n' + scenarios.join('\n'))
+        body.push(this.$t('Scenarios') + '\n' + scenarios.join('\n'))
       }
       if (this.jiraState.pattern.value !== 'bug') {
         let subtasks = []
         Object.keys(this.taskState.issueSteps).forEach((key, index) => {
           subtasks.push(index + 1 + '. ' + this.taskState.issueSteps[key])
         })
-        body.push('Subtasks:\n' + subtasks.join('\n'))
+        body.push(this.$t('Subtasks') + ':\n' + subtasks.join('\n'))
       }
       if (this.jiraState.pattern.value === 'new' || this.jiraState.pattern.value === 'update') {
         body.push(this.createFormPreview())
@@ -111,22 +111,22 @@ export default {
       console.log(this.formState)
       let form = []
       Object.keys(this.formState).forEach(key => {
-        form.push('\nForm group ' + this.formState[key].title + '')
+        form.push('\n' + this.$t('Form group') + ' ' + this.formState[key].title + '')
         this.formState[key].data.forEach(value => {
-          form.push('\nField type: ' + value.type + '\nField label: ' + value.label + '\nRequired validation: ' + value.requireValidation)
+          form.push('\n' + this.$t('Field type') + ': ' + value.type + '\n' + this.$t('Field label') + ': ' + value.label + '\n' + this.$t('Validation required') + ': ' + value.requireValidation)
           let validationRules = []
           if (value.requireValidation) {
-            validationRules.push('Validation rules:')
-            validationRules.push('* required: ' + value.validators.required)
-            validationRules.push('* value type: ' + value.validators.valueType)
+            validationRules.push(this.$t('Validation rules') + ':')
+            validationRules.push('* ' + this.$t('required') + ': ' + value.validators.required)
+            validationRules.push('* ' + this.$t('value type') + ': ' + value.validators.valueType)
             if (value.validators.length) {
-              validationRules.push('* field length: ' + value.validators.length)
+              validationRules.push('* ' + this.$t('field length') + ': ' + value.validators.length)
             }
             if (value.validators.diapason.min) {
-              validationRules.push('* min value: ' + value.validators.diapason.min)
+              validationRules.push('* ' + this.$t('min value') + ': ' + value.validators.diapason.min)
             }
             if (value.validators.diapason.max) {
-              validationRules.push('* max value: ' + value.validators.diapason.max)
+              validationRules.push('* ' + this.$t('max value') + ': ' + value.validators.diapason.max)
             }
           }
           if (validationRules.length > 0) form.push(validationRules.join('\n'))
@@ -140,7 +140,7 @@ export default {
     next () {
       this.$validator.validate().then(valid => {
         if (valid) {
-          console.log(this.$store.state.commonContainer)
+          // console.log(this.$store.state.commonContainer)
           let issueTypeId = null
           if (this.$store.state.commonContainer.issueType) {
             issueTypeId = this.$store.state.commonContainer.issueType.value

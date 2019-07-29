@@ -1,7 +1,7 @@
 <template>
   <q-card bordered class="my-card">
     <q-card-section>
-      <div class="text-h6 text-primary">Step 2</div>
+      <div class="text-h6 text-primary">{{ $t('Step') }} 2</div>
     </q-card-section>
     <q-separator inset></q-separator>
     <q-card-section>
@@ -10,7 +10,7 @@
         name="title"
         type="text"
         v-validate="'required'"
-        label="Title"
+        :label="$t('Title')"
         :dense="true">
       </q-input>
       <span class="text-red-5 text-caption">{{ errors.first('title') }}</span>
@@ -21,14 +21,14 @@
         name="path"
         type="text"
         v-validate="'required'"
-        label="url/path to bug"
+        :label="$t('url/path to bug')"
         :dense="true">
       </q-input>
       <span class="text-red-5 text-caption">{{ errors.first('path') }}</span>
     </q-card-section>
     <q-card-section>
       <div class="text-body1">
-        Steps to reproduce bug
+        {{ $t('Steps to reproduce bug') }}
         <q-btn type="button" class="glossy q-pa-xs q-mx-xs" @click="addStep" rounded color="primary" size="xs">
           <q-icon name="add_circle_outline" :key="'add-icon'" style="font-size: 1.5em;"></q-icon>
         </q-btn>
@@ -44,7 +44,7 @@
             use-input
             new-value-mode="add"
             @new-value="createStep"
-            label="Step">
+            :label="$t('Step')">
           </q-select>
           <span class="text-red-5 text-caption" :key="key + '-error'">{{ errors.first('step-' + key) }}</span>
         </div>
@@ -62,7 +62,7 @@
         v-validate="'required'"
         name="current"
         autogrow
-        suffix="current behavior"
+        :suffix="$t('current behavior')"
         type="textarea">
       </q-input>
       <span class="text-red-5 text-caption">{{ errors.first('current') }}</span>
@@ -74,14 +74,14 @@
         v-validate="'required'"
         name="expected"
         autogrow
-        suffix="expected behavior"
+        :suffix="$t('expected behavior')"
         type="textarea">
       </q-input>
       <span class="text-red-5 text-caption">{{ errors.first('expected') }}</span>
     </q-card-section>
     <q-card-actions>
-      <q-btn type="button" class="glossy q-py-xs float-right" @click="prev" rounded color="grey-5" label="Prev" size="sm"></q-btn>
-      <q-btn type="button" class="glossy q-py-xs float-right" @click="next" rounded color="grey-5" label="Next" size="sm"></q-btn>
+      <q-btn type="button" class="glossy q-py-xs float-right" @click="prev" rounded color="grey-5" :label="$t('Prev')" size="sm"></q-btn>
+      <q-btn type="button" class="glossy q-py-xs float-right" @click="next" rounded color="grey-5" :label="$t('Next')" size="sm"></q-btn>
     </q-card-actions>
   </q-card>
 </template>

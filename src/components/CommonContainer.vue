@@ -20,7 +20,7 @@
         v-model="ticketData.component"
         name="component"
         :options="formData.componentsOptions"
-        label="Select component">
+        :label="$t('Select component')">
       </q-select>
     </q-card-section>
     <q-card-section>
@@ -29,7 +29,7 @@
         name="issueType"
         v-validate="'required'"
         :options="formData.issuesOptions"
-        label="Select issue type">
+        :label="$t('Select issue type')">
       </q-select>
       <span class="text-red-5 text-caption">{{ errors.first('issueType') }}</span>
     </q-card-section>
@@ -38,7 +38,7 @@
         v-model="ticketData.user"
         name="user"
         :options="formData.usersOptions"
-        label="Assign task to">
+        :label="$t('Assign task to')">
       </q-select>
     </q-card-section>
     <q-card-section>
@@ -47,12 +47,12 @@
         name="pattern"
         v-validate="'required'"
         :options="wizardPatterns"
-        label="Select wizard pattern">
+        :label="$t('Select wizard pattern')">
       </q-select>
       <span class="text-red-5 text-caption">{{ errors.first('pattern') }}</span>
     </q-card-section>
     <q-card-actions>
-      <q-btn type="button" class="glossy q-py-xs float-right" @click="next" rounded color="grey-5" label="Next" size="sm"></q-btn>
+      <q-btn type="button" class="glossy q-py-xs float-right" @click="next" rounded color="grey-5" :label="$t('Next')" size="sm"></q-btn>
     </q-card-actions>
   </q-card>
 </template>
@@ -87,19 +87,19 @@ export default {
       wizardPatterns: [
         {
           value: 'bug',
-          label: 'Bug'
+          label: this.$t('Bug')
         },
         {
           value: 'update',
-          label: 'Change old functionality'
+          label: this.$t('Change old functionality')
         },
         {
           value: 'new',
-          label: 'New functionality'
+          label: this.$t('New functionality')
         },
         {
           value: 'refactoring',
-          label: 'Refactoring'
+          label: this.$t('Refactoring')
         }
       ]
     }
