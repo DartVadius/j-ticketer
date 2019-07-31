@@ -1,6 +1,8 @@
 {
   "name": "j-ticketer",
   "version": "0.1.0",
+  "author": "DartVadius",
+  "description": "issue creation wizard for jira",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service electron:serve",
