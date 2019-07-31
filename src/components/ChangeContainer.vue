@@ -63,8 +63,9 @@
         <div class="col">
           <q-input
             v-model="changeContainer.issueSteps[value]"
-            name="path"
-            type="text"
+            :name="'step-' + key"
+            autogrow
+            type="textarea"
             v-validate="'required'"
             :prefix="'#' + (key + 1)"
             :placeholder="'Subtask ' + (key + 1)"

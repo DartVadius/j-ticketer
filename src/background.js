@@ -42,7 +42,7 @@ function createMainWindow () {
     center: true
   })
 
-  let mainMenu = Menu.buildFromTemplate(mainMenuTemplate)
+  let mainMenu = Menu.buildFromTemplate(template)
   main.setMenu(mainMenu)
 
   if (process.platform === 'darwin') {
@@ -211,43 +211,59 @@ ipcMain.on('clear-jira-config', () => {
   configWindow.webContents.send('config-data', getJiraConfig())
 })
 
-const mainMenuTemplate = [
-  {
-    label: 'Menu',
-    submenu: [
-      {
-        label: 'Config',
-        accelerator: 'CmdOrCtrl+z',
-        click () {
-          if (configWindow.isVisible()) {
-            configWindow.hide()
-          } else {
-            configWindow.show()
-            configWindow.webContents.send('config-data', getJiraConfig())
-          }
-        }
-      },
-      {
-        label: 'About',
-        click () {
-          if (popUpWindow.isVisible()) {
-            popUpWindow.hide()
-          } else {
-            popUpWindow.show()
-            popUpWindow.webContents.send('popup-data', data)
-          }
-        }
-      },
-      {
-        label: 'Quit',
-        accelerator: process.platform === 'darwin' ? 'Command+Q' : 'Ctrl+q',
-        click () {
-          app.quit()
+const mainMenuTemplate = {
+  label: 'Menu',
+  submenu: [
+    {
+      label: 'Config',
+      accelerator: 'CmdOrCtrl+z',
+      click () {
+        if (configWindow.isVisible()) {
+          configWindow.hide()
+        } else {
+          configWindow.show()
+          configWindow.webContents.send('config-data', getJiraConfig())
         }
       }
-    ]
-  }
-]
+    },
+    {
+      label: 'About',
+      click () {
+        if (popUpWindow.isVisible()) {
+          popUpWindow.hide()
+        } else {
+          popUpWindow.show()
+          popUpWindow.webContents.send('popup-data', data)
+        }
+      }
+    },
+    {
+      label: 'Quit',
+      accelerator: process.platform === 'darwin' ? 'Command+Q' : 'Ctrl+q',
+      click () {
+        app.quit()
+      }
+    }
+  ]
+}
+
+const editMenuTemplate = {
+  label: 'Edit',
+  submenu: [
+    {
+      label: 'Copy',
+      accelerator: 'CmdOrCtrl+C',
+      selector: 'copy:'
+    },
+    {
+      label: 'Paste',
+      accelerator: 'CmdOrCtrl+V',
+      selector: 'paste:'
+    }
+  ]
+}
+
+const template = [mainMenuTemplate, editMenuTemplate]
 
 const configMenuTemplate = []
 

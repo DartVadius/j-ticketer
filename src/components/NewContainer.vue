@@ -80,10 +80,11 @@
           <q-input
             v-model="newContainer.issueSteps[value]"
             :name="'step-' + key"
-            type="text"
+            type="textarea"
             v-validate="'required'"
             :prefix="'#' + (key + 1)"
             :placeholder="'Subtask ' + (key + 1)"
+            autogrow
             :dense="true">
           </q-input>
           <span class="text-red-5 text-caption" :key="key + '-error'">{{ errors.first('step-' + key) }}</span>

@@ -51,7 +51,8 @@
           <q-input
             v-model="refactoringContainer.issueSteps[value]"
             :name="'step-' + key"
-            type="text"
+            type="textarea"
+            autogrow
             v-validate="'required'"
             :prefix="'#' + (key + 1)"
             :placeholder="'Subtask ' + (key + 1)"
