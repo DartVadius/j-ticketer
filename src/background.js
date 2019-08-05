@@ -212,7 +212,7 @@ ipcMain.on('clear-jira-config', () => {
 })
 
 const mainMenuTemplate = {
-  label: 'Menu',
+  label: 'Main',
   submenu: [
     {
       label: 'Config',
